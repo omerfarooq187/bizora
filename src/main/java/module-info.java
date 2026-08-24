@@ -19,6 +19,9 @@ module com.innovatewithomer.bizora {
     opens com.innovatewithomer.bizora.model
             to javafx.base;
 
+    opens com.innovatewithomer.bizora.model.dashboard
+            to javafx.base;
+
     exports com.innovatewithomer.bizora;
     opens com.innovatewithomer.bizora.model.report to javafx.base;
     opens com.innovatewithomer.bizora.repository to javafx.base, org.junit.platform.commons;

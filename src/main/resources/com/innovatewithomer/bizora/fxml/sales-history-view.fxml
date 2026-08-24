@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.innovatewithomer.bizora.controller.SalesHistoryController"
+        stylesheets="@../css/main.css">
+
+    <padding>
+        <Insets
+                top="20"
+                right="20"
+                bottom="20"
+                left="20"/>
+    </padding>
+
+
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
+
+    <top>
+
+        <VBox spacing="15">
+
+            <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="15">
+
+                <Label
+                        text="Sales History"
+                        styleClass="page-title"/>
+
+                <Label
+                        fx:id="salesCountLabel"
+                        text="0 sales"
+                        styleClass="secondary-text"/>
+
+            </HBox>
+
+
+            <!-- SEARCH / FILTERS -->
+
+            <HBox
+                    spacing="10"
+                    alignment="CENTER_LEFT">
+
+                <TextField
+                        fx:id="searchField"
+                        promptText="Search invoice number..."
+                        prefWidth="300"
+                        onKeyReleased="#handleSearch"/>
+
+                <ComboBox
+                        fx:id="paymentStatusComboBox"
+                        promptText="Payment Status"
+                        prefWidth="160"
+                        onAction="#handleFilterChanged"/>
+
+                <ComboBox
+                        fx:id="saleStatusComboBox"
+                        promptText="Sale Status"
+                        prefWidth="160"
+                        onAction="#handleFilterChanged"/>
+
+                <Button
+                        text="Clear Filters"
+                        onAction="#handleClearFilters"/>
+
+                <Button
+                        text="Refresh"
+                        onAction="#handleRefresh"/>
+
+            </HBox>
+
+        </VBox>
+
+    </top>
+
+
+    <!-- ===================================================== -->
+    <!-- SALES TABLE -->
+    <!-- ===================================================== -->
+
+    <center>
+
+        <TableView
+                fx:id="salesTable"
+                VBox.vgrow="ALWAYS">
+
+            <columns>
+
+                <TableColumn
+                        fx:id="invoiceColumn"
+                        text="Invoice #"
+                        prefWidth="180"/>
+
+                <TableColumn
+                        fx:id="customerColumn"
+                        text="Customer"
+                        prefWidth="150"/>
+
+                <TableColumn
+                        fx:id="dateColumn"
+                        text="Date"
+                        prefWidth="170"/>
+
+                <TableColumn
+                        fx:id="subtotalColumn"
+                        text="Subtotal"
+                        prefWidth="120"/>
+
+                <TableColumn
+                        fx:id="discountColumn"
+                        text="Discount"
+                        prefWidth="110"/>
+
+                <TableColumn
+                        fx:id="taxColumn"
+                        text="Tax"
+                        prefWidth="100"/>
+
+                <TableColumn
+                        fx:id="totalColumn"
+                        text="Total"
+                        prefWidth="120"/>
+
+                <TableColumn
+                        fx:id="paymentStatusColumn"
+                        text="Payment"
+                        prefWidth="140"/>
+
+                <TableColumn
+                        fx:id="saleStatusColumn"
+                        text="Status"
+                        prefWidth="120"/>
+
+            </columns>
+
+        </TableView>
+
+    </center>
+
+
+    <!-- ===================================================== -->
+    <!-- FOOTER -->
+    <!-- ===================================================== -->
+
+    <bottom>
+
+        <HBox
+                spacing="10"
+                alignment="CENTER_RIGHT">
+
+            <padding>
+                <Insets
+                        top="15"
+                        right="0"
+                        bottom="0"
+                        left="0"/>
+            </padding>
+
+            <Button
+                    text="View Details"
+                    onAction="#handleViewDetails"
+                    styleClass="primary-button"/>
+
+        </HBox>
+
+    </bottom>
+
+</BorderPane>
