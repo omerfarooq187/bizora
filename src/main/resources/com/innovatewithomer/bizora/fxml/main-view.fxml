@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<?import javafx.scene.layout.StackPane?>
+<BorderPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.innovatewithomer.bizora.controller.MainController"
+        stylesheets="@../css/main.css">
+
+    <!-- =========================
+         TOP BAR
+         ========================= -->
+
+    <top>
+
+        <HBox styleClass="top-bar"
+              alignment="CENTER_LEFT"
+              prefHeight="65">
+
+            <Label text="BIZORA"
+                   styleClass="app-name"/>
+
+            <HBox HBox.hgrow="ALWAYS"/>
+
+            <Label text="Omer"
+                   styleClass="user-name"/>
+
+            <Button styleClass="nav-button">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-cog"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+        </HBox>
+
+    </top>
+
+
+    <!-- =========================
+         SIDEBAR
+         ========================= -->
+
+    <left>
+
+        <VBox styleClass="sidebar"
+              prefWidth="220">
+
+            <Button fx:id="dashboardButton"
+                    text="Dashboard"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showDashboard">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-home"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+            <Button fx:id="productsButton"
+                    text="Products"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showProducts">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-box"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+            <Button fx:id="inventoryButton"
+                    text="Inventory"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showInventory">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-warehouse"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+            <Button fx:id="salesButton"
+                    text="Sales"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showSales">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-shopping-cart"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+            <Button fx:id="customersButton"
+                    text="Customers"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showCustomers">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-users"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+            <Button fx:id="suppliersButton"
+                    text="Suppliers"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showSuppliers">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-truck"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+            <Button fx:id="expensesButton"
+                    text="Expenses"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showExpenses">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-money-bill-wave"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+            <Button fx:id="reportsButton"
+                    text="Reports"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showReports">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-chart-bar"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+            <Separator VBox.vgrow="NEVER"/>
+
+            <Button fx:id="settingsButton"
+                    text="Settings"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showSettings">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-cog"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
+        </VBox>
+
+    </left>
+
+
+    <!-- =========================
+         MAIN CONTENT
+         ========================= -->
+
+    <center>
+        <StackPane fx:id="contentArea"
+                   styleClass="content-area"/>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.innovatewithomer.bizora.controller.AddProductController"
+      spacing="20"
+      prefWidth="500"
+      styleClass="dialog-root">
+
+    <padding>
+        <Insets top="24"
+                right="24"
+                bottom="24"
+                left="24"/>
+    </padding>
+
+    <VBox spacing="4">
+
+        <Label text="Add New Product"
+               styleClass="dialog-title"/>
+
+        <Label text="Enter the product information below."
+               styleClass="dialog-subtitle"/>
+
+    </VBox>
+
+    <GridPane hgap="12"
+              vgap="14">
+
+        <Label text="Product Name"
+               GridPane.rowIndex="0"
+               GridPane.columnIndex="0"/>
+
+        <TextField fx:id="nameField"
+                   promptText="e.g. Dell Latitude 5420"
+                   GridPane.rowIndex="0"
+                   GridPane.columnIndex="1"
+                   GridPane.hgrow="ALWAYS"/>
+
+        <Label text="SKU"
+               GridPane.rowIndex="1"
+               GridPane.columnIndex="0"/>
+
+        <TextField fx:id="skuField"
+                   promptText="e.g. LAP-001"
+                   GridPane.rowIndex="1"
+                   GridPane.columnIndex="1"
+                   GridPane.hgrow="ALWAYS"/>
+
+        <Label text="Purchase Price"
+               GridPane.rowIndex="2"
+               GridPane.columnIndex="0"/>
+
+        <TextField fx:id="purchasePriceField"
+                   promptText="0.00"
+                   GridPane.rowIndex="2"
+                   GridPane.columnIndex="1"
+                   GridPane.hgrow="ALWAYS"/>
+
+        <Label text="Selling Price"
+               GridPane.rowIndex="3"
+               GridPane.columnIndex="0"/>
+
+        <TextField fx:id="sellingPriceField"
+                   promptText="0.00"
+                   GridPane.rowIndex="3"
+                   GridPane.columnIndex="1"
+                   GridPane.hgrow="ALWAYS"/>
+
+        <Label text="Opening Stock"
+               GridPane.rowIndex="4"
+               GridPane.columnIndex="0"/>
+
+        <TextField fx:id="stockField"
+                   promptText="0"
+                   GridPane.rowIndex="4"
+                   GridPane.columnIndex="1"
+                   GridPane.hgrow="ALWAYS"/>
+
+    </GridPane>
+
+    <HBox alignment="CENTER_RIGHT"
+          spacing="10">
+
+        <Button text="Cancel"
+                styleClass="secondary-button"
+                onAction="#handleCancel"/>
+
+        <Button text="Save Product"
+                styleClass="primary-button"
+                onAction="#handleSave"/>
+
+    </HBox>
+
+</VBox>
