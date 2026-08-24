@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.Region?>
+<BorderPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.innovatewithomer.bizora.controller.NewSaleController"
+        stylesheets="@../css/main.css">
+
+    <padding>
+        <Insets
+                top="20"
+                right="20"
+                bottom="20"
+                left="20"/>
+    </padding>
+
+
+    <!-- ===================================================== -->
+    <!-- TOP -->
+    <!-- ===================================================== -->
+
+    <top>
+
+        <VBox spacing="15">
+
+            <!-- PAGE HEADER -->
+
+            <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="15">
+
+                <Label
+                        text="New Sale"
+                        styleClass="page-title"/>
+
+                <Label
+                        fx:id="invoiceLabel"
+                        text="Invoice: —"
+                        styleClass="secondary-text"/>
+
+            </HBox>
+
+
+            <!-- PRODUCT SEARCH -->
+
+            <HBox
+                    spacing="10"
+                    alignment="CENTER_LEFT">
+
+                <TextField
+                        fx:id="searchField"
+                        promptText="Search product by name or SKU..."
+                        prefWidth="350"
+                        onKeyReleased="#handleSearch"/>
+
+                <Button
+                        text="Clear"
+                        onAction="#handleClearSearch"/>
+
+                <Label
+                        fx:id="productCountLabel"
+                        text="0 products"/>
+
+            </HBox>
+
+        </VBox>
+
+    </top>
+
+
+    <!-- ===================================================== -->
+    <!-- CENTER -->
+    <!-- ===================================================== -->
+
+    <center>
+
+        <ScrollPane
+                fitToWidth="true"
+                fitToHeight="false"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                pannable="true"
+                styleClass="content-scroll-pane">
+
+            <VBox
+                    spacing="15"
+                    fillWidth="true">
+
+                <padding>
+                    <Insets
+                            top="15"
+                            right="15"
+                            bottom="15"
+                            left="0"/>
+                </padding>
+
+
+                <!-- ========================================= -->
+                <!-- PRODUCTS -->
+                <!-- ========================================= -->
+
+                <Label
+                        text="Products"
+                        styleClass="section-title"/>
+
+
+                <TableView
+                        fx:id="productTable"
+                        prefHeight="220"
+                        minHeight="180"
+                        maxHeight="350"
+                        onMouseClicked="#handleProductDoubleClick">
+
+                    <columns>
+
+                        <TableColumn
+                                fx:id="productNameColumn"
+                                text="Product"
+                                prefWidth="250"/>
+
+                        <TableColumn
+                                fx:id="productSkuColumn"
+                                text="SKU"
+                                prefWidth="150"/>
+
+                        <TableColumn
+                                fx:id="productStockColumn"
+                                text="Stock"
+                                prefWidth="100"/>
+
+                        <TableColumn
+                                fx:id="productPriceColumn"
+                                text="Price"
+                                prefWidth="120"/>
+
+                    </columns>
+
+                </TableView>
+
+
+                <!-- ========================================= -->
+                <!-- ADD TO CART -->
+                <!-- ========================================= -->
+
+                <HBox
+                        spacing="10"
+                        alignment="CENTER_LEFT">
+
+                    <Label
+                            text="Quantity:"/>
+
+                    <TextField
+                            fx:id="quantityField"
+                            text="1"
+                            prefWidth="100"/>
+
+                    <Button
+                            text="Add to Cart"
+                            onAction="#handleAddToCart"
+                            styleClass="primary-button"/>
+
+                </HBox>
+
+
+                <!-- ========================================= -->
+                <!-- CART -->
+                <!-- ========================================= -->
+
+                <Label
+                        text="Cart"
+                        styleClass="section-title"/>
+
+
+                <TableView
+                        fx:id="cartTable"
+                        prefHeight="300"
+                        minHeight="220"
+                        maxHeight="500">
+
+                    <columns>
+
+                        <TableColumn
+                                fx:id="cartProductColumn"
+                                text="Product"
+                                prefWidth="250"/>
+
+                        <TableColumn
+                                fx:id="cartQuantityColumn"
+                                text="Qty"
+                                prefWidth="80"/>
+
+                        <TableColumn
+                                fx:id="cartPriceColumn"
+                                text="Unit Price"
+                                prefWidth="120"/>
+
+                        <TableColumn
+                                fx:id="cartDiscountColumn"
+                                text="Discount"
+                                prefWidth="110"/>
+
+                        <TableColumn
+                                fx:id="cartSubtotalColumn"
+                                text="Subtotal"
+                                prefWidth="130"/>
+
+                        <TableColumn
+                                fx:id="cartActionColumn"
+                                text="Action"
+                                prefWidth="100"/>
+
+                    </columns>
+
+                </TableView>
+
+            </VBox>
+
+        </ScrollPane>
+
+    </center>
+
+
+    <!-- ===================================================== -->
+    <!-- RIGHT / SALE SUMMARY -->
+    <!-- ===================================================== -->
+
+    <right>
+
+        <ScrollPane
+                prefWidth="320"
+                minWidth="300"
+                maxWidth="350"
+                fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                pannable="true"
+                styleClass="summary-scroll-pane">
+
+            <VBox
+                    spacing="15"
+                    styleClass="sale-summary">
+
+                <padding>
+                    <Insets
+                            top="10"
+                            right="10"
+                            bottom="10"
+                            left="20"/>
+                </padding>
+
+
+                <!-- ========================================= -->
+                <!-- SUMMARY -->
+                <!-- ========================================= -->
+
+                <Label
+                        text="Sale Summary"
+                        styleClass="section-title"/>
+
+
+                <!-- SUBTOTAL -->
+
+                <HBox
+                        alignment="CENTER_LEFT"
+                        spacing="10">
+
+                    <Label
+                            text="Subtotal:"
+                            HBox.hgrow="ALWAYS"/>
+
+                    <Label
+                            fx:id="subtotalLabel"
+                            text="Rs. 0.00"/>
+
+                </HBox>
+
+
+                <!-- DISCOUNT -->
+
+                <HBox
+                        alignment="CENTER_LEFT"
+                        spacing="10">
+
+                    <Label
+                            text="Discount:"
+                            HBox.hgrow="ALWAYS"/>
+
+                    <TextField
+                            fx:id="discountField"
+                            text="0"
+                            prefWidth="100"/>
+
+                </HBox>
+
+
+                <!-- TAX -->
+
+                <HBox
+                        alignment="CENTER_LEFT"
+                        spacing="10">
+
+                    <Label
+                            text="Tax:"
+                            HBox.hgrow="ALWAYS"/>
+
+                    <TextField
+                            fx:id="taxField"
+                            text="0"
+                            prefWidth="100"/>
+
+                </HBox>
+
+
+                <!-- TOTAL -->
+
+                <HBox
+                        alignment="CENTER_LEFT"
+                        spacing="10"
+                        styleClass="total-row">
+
+                    <Label
+                            text="TOTAL:"
+                            HBox.hgrow="ALWAYS"/>
+
+                    <Label
+                            fx:id="totalLabel"
+                            text="Rs. 0.00"
+                            styleClass="total-label"/>
+
+                </HBox>
+
+
+                <!-- ========================================= -->
+                <!-- PAYMENT -->
+                <!-- ========================================= -->
+
+                <Label
+                        text="Payment"
+                        styleClass="section-title"/>
+
+
+                <Label
+                        text="Payment Method"/>
+
+
+                <ComboBox
+                        fx:id="paymentMethodComboBox"
+                        prefWidth="250"
+                        maxWidth="Infinity"/>
+
+
+                <Label
+                        text="Payment Amount"/>
+
+
+                <TextField
+                        fx:id="paymentAmountField"
+                        text="0"
+                        prefWidth="250"
+                        maxWidth="Infinity"/>
+
+
+                <Label
+                        fx:id="remainingLabel"
+                        text="Remaining: Rs. 0.00"/>
+
+
+                <!-- ========================================= -->
+                <!-- ACTIONS -->
+                <!-- ========================================= -->
+
+                <VBox
+                        spacing="10">
+
+                    <Button
+                            text="Complete Sale"
+                            maxWidth="Infinity"
+                            prefHeight="50"
+                            onAction="#handleCompleteSale"
+                            styleClass="primary-button"/>
+
+                    <Button
+                            text="Clear Cart"
+                            maxWidth="Infinity"
+                            prefHeight="40"
+                            onAction="#handleClearCart"/>
+
+                </VBox>
+
+
+                <!-- Bottom breathing room -->
+
+                <Region
+                        minHeight="10"/>
+
+            </VBox>
+
+        </ScrollPane>
+
+    </right>
+
+</BorderPane>

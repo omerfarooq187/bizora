@@ -163,6 +163,11 @@
     -fx-text-fill: #6b7280;
 }
 
+.secondary-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
+}
+
 
 /* =========================================
    PRIMARY BUTTON
@@ -255,6 +260,26 @@
 
 
 /* =========================================
+   LINK BUTTON
+   ========================================= */
+
+.link-button {
+    -fx-background-color: transparent;
+
+    -fx-text-fill: #4f46e5;
+
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-cursor: hand;
+}
+
+.link-button:hover {
+    -fx-text-fill: #4338ca;
+}
+
+
+/* =========================================
    CARDS
    ========================================= */
 
@@ -306,7 +331,7 @@
 
 
 /* =========================================
-   TABLE
+   GENERIC TABLE
    ========================================= */
 
 .table-view {
@@ -378,7 +403,442 @@
     -fx-border-color: #e7e9ef;
     -fx-border-width: 1px;
     -fx-border-radius: 10px;
+
     -fx-background-radius: 10px;
+}
+
+
+/* =========================================
+   SALES / POS
+   ========================================= */
+
+.sales-root {
+    -fx-background-color: #f7f8fc;
+}
+
+
+/* -----------------------------------------
+   SALES HEADER
+   ----------------------------------------- */
+
+.sales-header {
+    -fx-background-color: transparent;
+}
+
+.sales-invoice {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
+}
+
+
+/* -----------------------------------------
+   SALES PRODUCT AREA
+   ----------------------------------------- */
+
+.sales-products {
+    -fx-background-color: #ffffff;
+
+    -fx-background-radius: 12px;
+
+    -fx-border-color: #e7e9ef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+
+    -fx-padding: 16px;
+}
+
+.sales-product-search {
+    -fx-background-color: #ffffff;
+
+    -fx-border-color: #dfe3eb;
+    -fx-border-width: 1px;
+
+    -fx-background-radius: 9px;
+    -fx-border-radius: 9px;
+
+    -fx-padding: 10px 12px;
+}
+
+.sales-product-count {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b7280;
+}
+
+
+/* -----------------------------------------
+   SALES CART
+   ----------------------------------------- */
+
+.sales-cart {
+    -fx-background-color: #ffffff;
+
+    -fx-background-radius: 12px;
+
+    -fx-border-color: #e7e9ef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+
+    -fx-padding: 16px;
+}
+
+
+/* -----------------------------------------
+   SALES SUMMARY
+   ----------------------------------------- */
+
+.sale-summary {
+    -fx-background-color: #ffffff;
+
+    -fx-background-radius: 12px;
+
+    -fx-border-color: #e7e9ef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+
+    -fx-padding: 20px;
+}
+
+.sale-summary .section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.sale-summary .label {
+    -fx-text-fill: #374151;
+}
+
+
+/* -----------------------------------------
+   SALES TOTAL
+   ----------------------------------------- */
+
+.total-row {
+    -fx-background-color: #f8f9ff;
+
+    -fx-background-radius: 9px;
+
+    -fx-padding: 12px;
+}
+
+.total-row .label {
+    -fx-font-weight: bold;
+}
+
+.total-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4f46e5;
+}
+
+
+/* -----------------------------------------
+   PAYMENT SECTION
+   ----------------------------------------- */
+
+.payment-section {
+    -fx-background-color: #fafbff;
+
+    -fx-background-radius: 10px;
+
+    -fx-border-color: #e8eaf3;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+
+    -fx-padding: 14px;
+}
+
+.remaining-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #b45309;
+}
+
+
+/* -----------------------------------------
+   CART REMOVE BUTTON
+   ----------------------------------------- */
+
+.cart-remove-button {
+    -fx-background-color: #fee2e2;
+
+    -fx-text-fill: #dc2626;
+
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+
+    -fx-background-radius: 7px;
+
+    -fx-padding: 6px 10px;
+
+    -fx-cursor: hand;
+}
+
+.cart-remove-button:hover {
+    -fx-background-color: #fecaca;
+}
+
+
+/* =========================================
+   SALES HISTORY
+   ========================================= */
+
+.sales-history-root {
+    -fx-background-color: #f7f8fc;
+}
+
+
+/* -----------------------------------------
+   SALES HISTORY HEADER
+   ----------------------------------------- */
+
+.sales-history-header {
+    -fx-background-color: transparent;
+}
+
+.sales-history-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.sales-history-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7280;
+}
+
+
+/* -----------------------------------------
+   SALES HISTORY FILTER BAR
+   ----------------------------------------- */
+
+.sales-filter-bar {
+    -fx-background-color: #ffffff;
+
+    -fx-background-radius: 12px;
+
+    -fx-border-color: #e7e9ef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+
+    -fx-padding: 14px;
+}
+
+.sales-filter-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6b7280;
+}
+
+
+/* -----------------------------------------
+   SALES HISTORY TABLE CARD
+   ----------------------------------------- */
+
+.sales-history-table-card {
+    -fx-background-color: #ffffff;
+
+    -fx-background-radius: 12px;
+
+    -fx-border-color: #e7e9ef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+
+    -fx-padding: 0;
+}
+
+
+/* -----------------------------------------
+   SALES HISTORY TABLE
+   ----------------------------------------- */
+
+.sales-history-table {
+    -fx-background-color: #ffffff;
+
+    -fx-border-color: transparent;
+
+    -fx-background-radius: 12px;
+}
+
+.sales-history-table .column-header-background {
+    -fx-background-color: #f9fafb;
+
+    -fx-background-radius: 12px 12px 0 0;
+}
+
+.sales-history-table .column-header {
+    -fx-background-color: transparent;
+
+    -fx-border-color: transparent transparent #e7e9ef transparent;
+    -fx-border-width: 0 0 1px 0;
+
+    -fx-padding: 11px 12px;
+}
+
+.sales-history-table .column-header .label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6b7280;
+}
+
+.sales-history-table .table-row-cell {
+    -fx-background-color: #ffffff;
+
+    -fx-border-color: transparent transparent #f0f1f4 transparent;
+    -fx-border-width: 0 0 1px 0;
+
+    -fx-padding: 3px 0;
+}
+
+.sales-history-table .table-row-cell:hover {
+    -fx-background-color: #f8f9fc;
+}
+
+.sales-history-table .table-row-cell:selected {
+    -fx-background-color: #eef2ff;
+}
+
+.sales-history-table .table-cell {
+    -fx-font-size: 12px;
+    -fx-text-fill: #374151;
+
+    -fx-padding: 10px 12px;
+}
+
+
+/* -----------------------------------------
+   SALES HISTORY COUNT
+   ----------------------------------------- */
+
+.sales-count-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6b7280;
+}
+
+
+/* -----------------------------------------
+   SALES HISTORY ACTIONS
+   ----------------------------------------- */
+
+.sales-history-actions {
+    -fx-background-color: transparent;
+}
+
+.view-sale-button {
+    -fx-background-color: #eef2ff;
+
+    -fx-text-fill: #4f46e5;
+
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+
+    -fx-background-radius: 8px;
+
+    -fx-padding: 8px 13px;
+
+    -fx-cursor: hand;
+}
+
+.view-sale-button:hover {
+    -fx-background-color: #e0e7ff;
+}
+
+
+/* =========================================
+   STATUS BADGES
+   ========================================= */
+
+.status-paid {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #15803d;
+
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 10px;
+
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.status-partial {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #b45309;
+
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 10px;
+
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.status-unpaid {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #dc2626;
+
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 10px;
+
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+
+/* =========================================
+   SALE STATUS
+   ========================================= */
+
+.status-completed {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #15803d;
+
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 10px;
+
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.status-cancelled {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #dc2626;
+
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 10px;
+
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+
+/* =========================================
+   SECTION TITLES
+   ========================================= */
+
+.section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.section-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9ca3af;
+}
+
+
+/* =========================================
+   EMPTY STATE
+   ========================================= */
+
+.empty-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #374151;
+}
+
+.empty-description {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9ca3af;
 }
 
 
@@ -406,11 +866,6 @@
     -fx-font-size: 12px;
     -fx-text-fill: #6b7280;
 }
-
-
-/* =========================================
-   FORM LABELS
-   ========================================= */
 
 .dialog-root .label {
     -fx-font-size: 12px;
@@ -455,60 +910,6 @@
 .scroll-bar .decrement-button {
     -fx-background-color: transparent;
     -fx-padding: 0;
-}
-
-
-/* =========================================
-   STATUS BADGES
-   ========================================= */
-
-.status-paid {
-    -fx-background-color: #dcfce7;
-    -fx-text-fill: #15803d;
-
-    -fx-background-radius: 20px;
-    -fx-padding: 5px 10px;
-
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-}
-
-.status-partial {
-    -fx-background-color: #fef3c7;
-    -fx-text-fill: #b45309;
-
-    -fx-background-radius: 20px;
-    -fx-padding: 5px 10px;
-
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-}
-
-.status-unpaid {
-    -fx-background-color: #fee2e2;
-    -fx-text-fill: #dc2626;
-
-    -fx-background-radius: 20px;
-    -fx-padding: 5px 10px;
-
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-}
-
-
-/* =========================================
-   EMPTY STATE
-   ========================================= */
-
-.empty-title {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #374151;
-}
-
-.empty-description {
-    -fx-font-size: 12px;
-    -fx-text-fill: #9ca3af;
 }
 
 
@@ -575,22 +976,6 @@
 
 
 /* =========================================
-   SECTIONS
-   ========================================= */
-
-.section-title {
-    -fx-font-size: 17px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #111827;
-}
-
-.section-subtitle {
-    -fx-font-size: 12px;
-    -fx-text-fill: #9ca3af;
-}
-
-
-/* =========================================
    DASHBOARD TABLE
    ========================================= */
 
@@ -629,22 +1014,51 @@
     -fx-background-color: #f9fafb;
 }
 
-
 /* =========================================
-   LINK BUTTON
+   SALES SUB NAVIGATION
    ========================================= */
 
-.link-button {
-    -fx-background-color: transparent;
-
-    -fx-text-fill: #4f46e5;
+.sub-nav-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #4b5563;
 
     -fx-font-size: 13px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 600;
+
+    -fx-border-color: #dfe3eb;
+    -fx-border-width: 1px;
+
+    -fx-background-radius: 9px;
+    -fx-border-radius: 9px;
+
+    -fx-padding: 9px 16px;
 
     -fx-cursor: hand;
 }
 
-.link-button:hover {
+.sub-nav-button:hover {
+    -fx-background-color: #f8f9fb;
+    -fx-border-color: #cfd4dd;
+    -fx-text-fill: #111827;
+}
+
+.sub-nav-button:pressed {
+    -fx-background-color: #f1f2f5;
+}
+
+
+/* =========================================
+   SALES SUB NAVIGATION ACTIVE
+   ========================================= */
+
+.active-nav-button {
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #4f46e5;
+
+    -fx-border-color: #6366f1;
+}
+
+.active-nav-button:hover {
+    -fx-background-color: #e0e7ff;
     -fx-text-fill: #4338ca;
 }
