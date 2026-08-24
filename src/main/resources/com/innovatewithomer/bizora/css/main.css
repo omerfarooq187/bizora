@@ -873,6 +873,33 @@
     -fx-text-fill: #374151;
 }
 
+.dialog-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.error-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #dc2626; /* Using same red as danger-button */
+    -fx-font-weight: 500;
+}
+
+.text-area {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dfe3eb;
+    -fx-border-width: 1px;
+    -fx-background-radius: 9px;
+    -fx-border-radius: 9px;
+    -fx-padding: 10px 12px;
+    -fx-font-size: 13px;
+}
+
+.text-area:focused {
+    -fx-border-color: #6366f1;
+    -fx-border-width: 1.5px;
+}
+
 
 /* =========================================
    SEPARATOR

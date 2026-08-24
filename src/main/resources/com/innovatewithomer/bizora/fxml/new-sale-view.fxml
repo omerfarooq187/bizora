@@ -68,11 +68,13 @@
 
                 <Button
                         text="Clear"
-                        onAction="#handleClearSearch"/>
+                        onAction="#handleClearSearch"
+                        styleClass="secondary-button"/>
 
                 <Label
                         fx:id="productCountLabel"
-                        text="0 products"/>
+                        text="0 products"
+                        styleClass="secondary-text"/>
 
             </HBox>
 
@@ -92,8 +94,7 @@
                 fitToHeight="false"
                 hbarPolicy="NEVER"
                 vbarPolicy="AS_NEEDED"
-                pannable="true"
-                styleClass="content-scroll-pane">
+                pannable="true">
 
             <VBox
                     spacing="15"
@@ -119,6 +120,7 @@
 
                 <TableView
                         fx:id="productTable"
+                        styleClass="table-view"
                         prefHeight="220"
                         minHeight="180"
                         maxHeight="350"
@@ -186,6 +188,7 @@
 
                 <TableView
                         fx:id="cartTable"
+                        styleClass="table-view"
                         prefHeight="300"
                         minHeight="220"
                         maxHeight="500">
@@ -246,8 +249,7 @@
                 fitToWidth="true"
                 hbarPolicy="NEVER"
                 vbarPolicy="AS_NEEDED"
-                pannable="true"
-                styleClass="summary-scroll-pane">
+                pannable="true">
 
             <VBox
                     spacing="15"
@@ -375,7 +377,8 @@
 
                 <Label
                         fx:id="remainingLabel"
-                        text="Remaining: Rs. 0.00"/>
+                        text="Remaining: Rs. 0.00"
+                        styleClass="remaining-label"/>
 
 
                 <!-- ========================================= -->
@@ -396,7 +399,8 @@
                             text="Clear Cart"
                             maxWidth="Infinity"
                             prefHeight="40"
-                            onAction="#handleClearCart"/>
+                            onAction="#handleClearCart"
+                            styleClass="secondary-button"/>
 
                 </VBox>
 

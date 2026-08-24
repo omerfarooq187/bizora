@@ -13,7 +13,7 @@
       fx:controller="com.innovatewithomer.bizora.controller.AdjustStockController"
       spacing="16"
       prefWidth="420"
-      styleClass="dialog-container">
+      styleClass="dialog-root">
 
     <padding>
         <Insets top="24"
@@ -26,8 +26,7 @@
            styleClass="dialog-title"/>
 
     <VBox spacing="5">
-        <Label text="Product"
-               styleClass="field-label"/>
+        <Label text="Product"/>
 
         <Label fx:id="productNameLabel"
                text="Product"
@@ -35,8 +34,7 @@
     </VBox>
 
     <VBox spacing="5">
-        <Label text="Current Stock"
-               styleClass="field-label"/>
+        <Label text="Current Stock"/>
 
         <Label fx:id="currentStockLabel"
                text="0"
@@ -44,16 +42,14 @@
     </VBox>
 
     <VBox spacing="7">
-        <Label text="Actual Stock"
-               styleClass="field-label"/>
+        <Label text="Actual Stock"/>
 
         <TextField fx:id="actualStockField"
                    promptText="Enter actual stock quantity"/>
     </VBox>
 
     <VBox spacing="7">
-        <Label text="Note"
-               styleClass="field-label"/>
+        <Label text="Note"/>
 
         <TextArea fx:id="noteField"
                   promptText="Reason for stock adjustment..."

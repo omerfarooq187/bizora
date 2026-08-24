@@ -76,11 +76,13 @@
 
                 <Button
                         text="Clear Filters"
-                        onAction="#handleClearFilters"/>
+                        onAction="#handleClearFilters"
+                        styleClass="secondary-button"/>
 
                 <Button
                         text="Refresh"
-                        onAction="#handleRefresh"/>
+                        onAction="#handleRefresh"
+                        styleClass="secondary-button"/>
 
             </HBox>
 
@@ -97,6 +99,7 @@
 
         <TableView
                 fx:id="salesTable"
+                styleClass="sales-history-table"
                 VBox.vgrow="ALWAYS">
 
             <columns>

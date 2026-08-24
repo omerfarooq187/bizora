@@ -73,6 +73,7 @@
                        styleClass="section-title"/>
 
                 <TableView fx:id="productTable"
+                           styleClass="table-view"
                            VBox.vgrow="ALWAYS"
                            prefHeight="280">
 
@@ -165,6 +166,7 @@
                        styleClass="section-title"/>
 
                 <TableView fx:id="movementTable"
+                           styleClass="table-view"
                            VBox.vgrow="ALWAYS">
 
                     <columns>
