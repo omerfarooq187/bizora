@@ -49,4 +49,34 @@ Requirements:
 Run:
 
 ```bash
-mvn clean javafx:run
+./mvnw clean javafx:run
+```
+
+Run the test suite:
+
+```bash
+./mvnw test
+```
+
+JavaFX view-loading tests require a graphical environment. They are skipped
+automatically on headless machines; use Xvfb or a desktop session to include
+them in a CI run.
+
+## Application Data
+
+Bizora stores its SQLite database in the current user's application-data
+directory:
+
+- Linux and macOS: `~/.local/share/Bizora/bizora.db`
+- Windows: `%APPDATA%\\Bizora\\bizora.db`
+
+Business identity, currency, tax, and receipt preferences are persisted using
+the operating system's Java preferences store.
+
+## Packaging
+
+Create a trimmed runtime image with:
+
+```bash
+./mvnw clean javafx:jlink
+```

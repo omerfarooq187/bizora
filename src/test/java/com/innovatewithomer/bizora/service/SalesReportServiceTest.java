@@ -1,5 +1,6 @@
 package com.innovatewithomer.bizora.service;
 
+import com.innovatewithomer.bizora.infrastructure.DatabaseManager;
 import com.innovatewithomer.bizora.model.SalesReport;
 import com.innovatewithomer.bizora.repository.SalesReportRepositoryPort;
 import org.junit.jupiter.api.*;
@@ -19,6 +20,12 @@ class SalesReportServiceTest {
     @BeforeEach
     void setUp() {
 
+        DatabaseManager.setJdbcUrl(
+                "jdbc:sqlite:file:bizora_test_"
+                        + System.nanoTime()
+                        + "?mode=memory&cache=shared"
+        );
+
         repository =
                 new FakeSalesReportRepository();
 
@@ -26,6 +33,11 @@ class SalesReportServiceTest {
                 new SalesReportService(
                         repository
                 );
+    }
+
+    @AfterEach
+    void tearDown() {
+        DatabaseManager.resetJdbcUrl();
     }
 
     @Test

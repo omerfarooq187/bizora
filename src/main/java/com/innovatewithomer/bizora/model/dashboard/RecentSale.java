@@ -9,6 +9,7 @@ public class RecentSale {
 
     private final Long id;
     private final String invoiceNumber;
+    private final String customerName;
     private final double total;
     private final PaymentStatus paymentStatus;
     private final SaleStatus saleStatus;
@@ -22,8 +23,21 @@ public class RecentSale {
             SaleStatus saleStatus,
             LocalDateTime createdAt
     ) {
+        this(id, invoiceNumber, "Walk-in", total, paymentStatus, saleStatus, createdAt);
+    }
+
+    public RecentSale(
+            Long id,
+            String invoiceNumber,
+            String customerName,
+            double total,
+            PaymentStatus paymentStatus,
+            SaleStatus saleStatus,
+            LocalDateTime createdAt
+    ) {
         this.id = id;
         this.invoiceNumber = invoiceNumber;
+        this.customerName = customerName != null && !customerName.isBlank() ? customerName : "Walk-in";
         this.total = total;
         this.paymentStatus = paymentStatus;
         this.saleStatus = saleStatus;
@@ -36,6 +50,10 @@ public class RecentSale {
 
     public String getInvoiceNumber() {
         return invoiceNumber;
+    }
+
+    public String getCustomerName() {
+        return customerName;
     }
 
     public double getTotal() {

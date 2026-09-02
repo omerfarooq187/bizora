@@ -236,14 +236,14 @@ public class PurchaseService {
             );
         }
 
-        if (purchase.getDiscount() < 0) {
+        if (!Double.isFinite(purchase.getDiscount()) || purchase.getDiscount() < 0) {
 
             throw new IllegalArgumentException(
                     "Discount cannot be negative."
             );
         }
 
-        if (purchase.getTax() < 0) {
+        if (!Double.isFinite(purchase.getTax()) || purchase.getTax() < 0) {
 
             throw new IllegalArgumentException(
                     "Tax cannot be negative."
@@ -279,21 +279,21 @@ public class PurchaseService {
                 );
             }
 
-            if (item.getQuantity() <= 0) {
+            if (!Double.isFinite(item.getQuantity()) || item.getQuantity() <= 0) {
 
                 throw new IllegalArgumentException(
                         "Item quantity must be greater than zero."
                 );
             }
 
-            if (item.getUnitPrice() < 0) {
+            if (!Double.isFinite(item.getUnitPrice()) || item.getUnitPrice() < 0) {
 
                 throw new IllegalArgumentException(
                         "Unit price cannot be negative."
                 );
             }
 
-            if (item.getDiscount() < 0) {
+            if (!Double.isFinite(item.getDiscount()) || item.getDiscount() < 0) {
 
                 throw new IllegalArgumentException(
                         "Item discount cannot be negative."

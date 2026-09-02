@@ -144,7 +144,7 @@ public class InventoryService {
             double quantity
     ) {
 
-        if (quantity <= 0) {
+        if (!Double.isFinite(quantity) || quantity <= 0) {
 
             throw new IllegalArgumentException(
                     "Quantity must be greater than zero."
@@ -158,7 +158,7 @@ public class InventoryService {
             String note
     ) {
 
-        if (actualStock < 0) {
+        if (!Double.isFinite(actualStock) || actualStock < 0) {
             throw new IllegalArgumentException(
                     "Actual stock cannot be negative."
             );

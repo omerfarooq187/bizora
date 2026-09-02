@@ -106,6 +106,7 @@ class SaleServiceTest {
                     product_id INTEGER NOT NULL,
                     quantity REAL NOT NULL,
                     unit_price REAL NOT NULL,
+                    cost_price REAL NOT NULL DEFAULT 0,
                     discount REAL NOT NULL DEFAULT 0,
                     subtotal REAL NOT NULL DEFAULT 0,
 
@@ -240,6 +241,20 @@ class SaleServiceTest {
                 8,
                 updated.getStockQuantity()
         );
+    }
+
+    @Test
+    void shouldSnapshotProductCostOnSaleItem() {
+        Product product = productRepository.save(
+                new Product("Monitor", "MON-COST", 45000, 30000, 5)
+        );
+        Sale sale = new Sale("INV-COST-001");
+        sale.addItem(new SaleItem(product.getId(), 2, 45000, 0));
+
+        saleService.createSale(sale);
+
+        Sale saved = saleService.getSale(sale.getId());
+        assertEquals(30000, saved.getItems().getFirst().getCostPrice());
     }
 
     @Test

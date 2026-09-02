@@ -199,9 +199,10 @@ public class ProductController {
                     .toLowerCase()
                     .contains(searchText)
 
-                    || product.getSku()
-                    .toLowerCase()
-                    .contains(searchText);
+                    || (product.getSku() != null
+                    && product.getSku()
+                            .toLowerCase()
+                            .contains(searchText));
         });
     }
 
@@ -308,12 +309,22 @@ public class ProductController {
 
         if (result.isPresent()
                 && result.get() == ButtonType.OK) {
-
-            productService.deleteProduct(
-                    product.getId()
-            );
-
-            loadProducts();
+            try {
+                productService.deleteProduct(product.getId());
+                loadProducts();
+            } catch (RuntimeException e) {
+                showDeleteError(
+                        "This product is used by sales, purchases, or inventory records and cannot be deleted."
+                );
+            }
         }
+    }
+
+    private void showDeleteError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Products");
+        alert.setHeaderText("Unable to delete product");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

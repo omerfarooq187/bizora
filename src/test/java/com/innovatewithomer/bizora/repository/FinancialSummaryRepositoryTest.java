@@ -35,6 +35,15 @@ class FinancialSummaryRepositoryTest {
                 PRAGMA foreign_keys = ON
                 """);
 
+            statement.execute("""
+                CREATE TABLE sale_items (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    sale_id INTEGER NOT NULL,
+                    quantity REAL NOT NULL,
+                    cost_price REAL NOT NULL DEFAULT 0
+                )
+                """);
+
             // -----------------------------------------
             // SALES
             // -----------------------------------------
@@ -138,7 +147,7 @@ class FinancialSummaryRepositoryTest {
 
         assertEquals(
                 60000,
-                summary.getTotalPurchases()
+                summary.getTotalCostOfGoodsSold()
         );
 
         assertEquals(
@@ -155,6 +164,28 @@ class FinancialSummaryRepositoryTest {
                 30000,
                 summary.getNetProfit()
         );
+    }
+
+    @Test
+    void shouldUseCostOfGoodsSoldAndExcludeCancelledSales() {
+        insertSale("INV-VALID", 100000, "2026-08-10T10:00:00");
+        insertCostForInvoice("INV-VALID", 60000);
+
+        insertSale("INV-CANCELLED", 500000, "2026-08-11T10:00:00");
+        insertCostForInvoice("INV-CANCELLED", 400000);
+        setSaleStatus("INV-CANCELLED", "CANCELLED");
+
+        insertExpense("Rent", "Shop rent", 10000, LocalDate.of(2026, 8, 12));
+
+        FinancialSummary summary = financialSummaryRepository.getFinancialSummary(
+                LocalDate.of(2026, 8, 1),
+                LocalDate.of(2026, 8, 31)
+        );
+
+        assertEquals(100000, summary.getTotalSales());
+        assertEquals(60000, summary.getTotalCostOfGoodsSold());
+        assertEquals(40000, summary.getGrossProfit());
+        assertEquals(30000, summary.getNetProfit());
     }
 
     @Test
@@ -303,7 +334,7 @@ class FinancialSummaryRepositoryTest {
 
         assertEquals(
                 60000,
-                summary.getTotalPurchases()
+                summary.getTotalCostOfGoodsSold()
         );
 
         assertEquals(
@@ -376,7 +407,7 @@ class FinancialSummaryRepositoryTest {
 
         assertEquals(
                 30000,
-                summary.getTotalPurchases()
+                summary.getTotalCostOfGoodsSold()
         );
 
         assertEquals(
@@ -413,7 +444,7 @@ class FinancialSummaryRepositoryTest {
 
         assertEquals(
                 0,
-                summary.getTotalPurchases()
+                summary.getTotalCostOfGoodsSold()
         );
 
         assertEquals(
@@ -646,12 +677,51 @@ class FinancialSummaryRepositoryTest {
 
             statement.executeUpdate();
 
+            try (var costStatement = connection.prepareStatement("""
+                    INSERT INTO sale_items (sale_id, quantity, cost_price)
+                    SELECT id, 1, ?
+                    FROM sales
+                    ORDER BY ABS(julianday(created_at) - julianday(?))
+                    LIMIT 1
+                    """)) {
+                costStatement.setDouble(1, total);
+                costStatement.setString(2, createdAt);
+                costStatement.executeUpdate();
+            }
+
         } catch (Exception e) {
 
             throw new RuntimeException(
                     "Failed to insert test purchase.",
                     e
             );
+        }
+    }
+
+    private void insertCostForInvoice(String invoiceNumber, double cost) {
+        try (Connection connection = DatabaseManager.getConnection();
+             var statement = connection.prepareStatement("""
+                     INSERT INTO sale_items (sale_id, quantity, cost_price)
+                     SELECT id, 1, ? FROM sales WHERE invoice_number = ?
+                     """)) {
+            statement.setDouble(1, cost);
+            statement.setString(2, invoiceNumber);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to insert test cost.", e);
+        }
+    }
+
+    private void setSaleStatus(String invoiceNumber, String status) {
+        try (Connection connection = DatabaseManager.getConnection();
+             var statement = connection.prepareStatement("""
+                     UPDATE sales SET sale_status = ? WHERE invoice_number = ?
+                     """)) {
+            statement.setString(1, status);
+            statement.setString(2, invoiceNumber);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update test sale status.", e);
         }
     }
 

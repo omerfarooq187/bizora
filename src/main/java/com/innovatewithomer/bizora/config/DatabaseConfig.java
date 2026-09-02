@@ -44,10 +44,18 @@ public final class DatabaseConfig {
 
         } catch (Exception e) {
 
-            throw new RuntimeException(
-                    "Unable to create Bizora data directory.",
-                    e
-            );
+            try {
+                dataDirectory = Paths.get(
+                        System.getProperty("java.io.tmpdir"),
+                        APP_NAME
+                );
+                Files.createDirectories(dataDirectory);
+            } catch (Exception ex) {
+                throw new RuntimeException(
+                        "Unable to create Bizora data directory.",
+                        ex
+                );
+            }
         }
 
         return dataDirectory;

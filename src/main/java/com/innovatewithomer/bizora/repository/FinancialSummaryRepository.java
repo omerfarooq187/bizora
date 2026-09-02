@@ -21,15 +21,18 @@ public class FinancialSummaryRepository
                 SELECT
                     COALESCE(SUM(total), 0)
                 FROM sales
-                WHERE DATE(created_at)
+                WHERE sale_status = 'COMPLETED'
+                  AND DATE(created_at)
                     BETWEEN ? AND ?
                 """;
 
-        String purchasesSql = """
+        String costOfGoodsSoldSql = """
                 SELECT
-                    COALESCE(SUM(total), 0)
-                FROM purchases
-                WHERE DATE(created_at)
+                    COALESCE(SUM(item.quantity * item.cost_price), 0)
+                FROM sale_items item
+                JOIN sales sale ON sale.id = item.sale_id
+                WHERE sale.sale_status = 'COMPLETED'
+                  AND DATE(sale.created_at)
                     BETWEEN ? AND ?
                 """;
 
@@ -54,10 +57,10 @@ public class FinancialSummaryRepository
                             to
                     );
 
-            double totalPurchases =
+            double totalCostOfGoodsSold =
                     getTotal(
                             connection,
-                            purchasesSql,
+                            costOfGoodsSoldSql,
                             from,
                             to
                     );
@@ -74,7 +77,7 @@ public class FinancialSummaryRepository
                     from,
                     to,
                     totalSales,
-                    totalPurchases,
+                    totalCostOfGoodsSold,
                     totalExpenses
             );
 

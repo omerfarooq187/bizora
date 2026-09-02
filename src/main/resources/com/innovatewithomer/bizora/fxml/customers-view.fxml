@@ -1,15 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      spacing="10">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.innovatewithomer.bizora.controller.CustomersController"
+            styleClass="content-root">
 
-    <Label text="Customers"
-           styleClass="page-title"/>
+    <!-- ===== HEADER ===== -->
+    <top>
+        <VBox styleClass="page-header" spacing="4">
+            <padding><Insets top="0" right="0" bottom="18" left="0"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <VBox HBox.hgrow="ALWAYS" spacing="3">
+                    <Label text="Customers" styleClass="page-title"/>
+                    <Label text="Manage your customer contacts and records." styleClass="page-subtitle"/>
+                </VBox>
+                <Button fx:id="addCustomerButton" text="Add Customer" styleClass="primary-button"
+                        onAction="#handleAddCustomer">
+                    <graphic><FontIcon iconLiteral="fas-plus" iconSize="13"/></graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
 
-    <Label text="Manage your customers here."
-           styleClass="page-subtitle"/>
+    <!-- ===== MAIN CONTENT ===== -->
+    <center>
+        <VBox spacing="14">
 
-</VBox>
+            <!-- Stats row -->
+            <HBox spacing="14">
+                <VBox styleClass="stat-chip" HBox.hgrow="ALWAYS">
+                    <Label fx:id="totalCustomersLabel" text="0" styleClass="stat-chip-value"/>
+                    <Label text="Total Customers" styleClass="stat-chip-label"/>
+                </VBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search by name, phone or email…"
+                           styleClass="search-field" HBox.hgrow="ALWAYS"
+                           onKeyReleased="#handleSearch"/>
+            </HBox>
+
+            <!-- Table card -->
+            <VBox styleClass="table-card" VBox.vgrow="ALWAYS">
+                <TableView fx:id="customersTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+                    <columns>
+                        <TableColumn fx:id="idColumn"    text="#"       prefWidth="55"  style="-fx-alignment:CENTER;"/>
+                        <TableColumn fx:id="nameColumn"  text="Name"    prefWidth="200"/>
+                        <TableColumn fx:id="phoneColumn" text="Phone"   prefWidth="145"/>
+                        <TableColumn fx:id="emailColumn" text="Email"   prefWidth="210"/>
+                        <TableColumn fx:id="addressColumn" text="Address" prefWidth="230"/>
+                        <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="155" style="-fx-alignment:CENTER;"/>
+                    </columns>
+                    <placeholder>
+                        <VBox alignment="CENTER" spacing="10">
+                            <FontIcon iconLiteral="fas-users" iconSize="36" style="-fx-icon-color:#d1d5db;"/>
+                            <Label text="No customers yet." style="-fx-text-fill:#9ca3af; -fx-font-size:14px;"/>
+                            <Label text="Click &#34;Add Customer&#34; to get started." style="-fx-text-fill:#9ca3af; -fx-font-size:12px;"/>
+                        </VBox>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
+
+    <!-- ===== STATUS BAR ===== -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="table-footer">
+            <padding><Insets top="10" right="0" bottom="0" left="0"/></padding>
+            <Label fx:id="statusLabel" text="" styleClass="secondary-text"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

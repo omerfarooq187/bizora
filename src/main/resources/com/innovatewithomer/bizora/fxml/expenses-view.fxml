@@ -1,15 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      spacing="10">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.innovatewithomer.bizora.controller.ExpensesController"
+            styleClass="content-root">
 
-    <Label text="Expenses"
-           styleClass="page-title"/>
+    <!-- ===== HEADER ===== -->
+    <top>
+        <VBox spacing="4">
+            <padding><Insets top="0" right="0" bottom="18" left="0"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <VBox HBox.hgrow="ALWAYS" spacing="3">
+                    <Label text="Expenses" styleClass="page-title"/>
+                    <Label text="Track and manage your business expenses." styleClass="page-subtitle"/>
+                </VBox>
+                <Button text="Add Expense" styleClass="primary-button" onAction="#handleAddExpense">
+                    <graphic><FontIcon iconLiteral="fas-plus" iconSize="13"/></graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
 
-    <Label text="Manage your expenses here."
-           styleClass="page-subtitle"/>
+    <!-- ===== MAIN CONTENT ===== -->
+    <center>
+        <VBox spacing="14">
 
-</VBox>
+            <!-- Summary chips -->
+            <HBox spacing="14">
+                <VBox styleClass="stat-chip" HBox.hgrow="ALWAYS">
+                    <Label fx:id="totalExpensesLabel" text="\$0.00" styleClass="stat-chip-value"/>
+                    <Label text="Total Expenses" styleClass="stat-chip-label"/>
+                </VBox>
+                <VBox styleClass="stat-chip" HBox.hgrow="ALWAYS">
+                    <Label fx:id="expenseCountLabel" text="0" styleClass="stat-chip-value"/>
+                    <Label text="Expense Entries" styleClass="stat-chip-label"/>
+                </VBox>
+            </HBox>
+
+            <!-- Filter bar -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search by category or description…"
+                           styleClass="search-field" HBox.hgrow="ALWAYS"
+                           onKeyReleased="#handleSearch"/>
+                <ComboBox fx:id="categoryFilter" promptText="All Categories" prefWidth="160"/>
+            </HBox>
+
+            <!-- Table -->
+            <VBox styleClass="table-card" VBox.vgrow="ALWAYS">
+                <TableView fx:id="expensesTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+                    <columns>
+                        <TableColumn fx:id="idColumn"          text="#"           prefWidth="55"  style="-fx-alignment:CENTER;"/>
+                        <TableColumn fx:id="categoryColumn"    text="Category"    prefWidth="150"/>
+                        <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="250"/>
+                        <TableColumn fx:id="amountColumn"      text="Amount"      prefWidth="120" style="-fx-alignment:CENTER_RIGHT;"/>
+                        <TableColumn fx:id="dateColumn"        text="Date"        prefWidth="130"/>
+                        <TableColumn fx:id="actionsColumn"     text="Actions"     prefWidth="130" style="-fx-alignment:CENTER;"/>
+                    </columns>
+                    <placeholder>
+                        <VBox alignment="CENTER" spacing="10">
+                            <FontIcon iconLiteral="fas-receipt" iconSize="36" style="-fx-icon-color:#d1d5db;"/>
+                            <Label text="No expenses recorded." style="-fx-text-fill:#9ca3af; -fx-font-size:14px;"/>
+                            <Label text="Click &#34;Add Expense&#34; to record one." style="-fx-text-fill:#9ca3af; -fx-font-size:12px;"/>
+                        </VBox>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" styleClass="table-footer">
+            <padding><Insets top="10" right="0" bottom="0" left="0"/></padding>
+            <Label fx:id="statusLabel" text="" styleClass="secondary-text"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

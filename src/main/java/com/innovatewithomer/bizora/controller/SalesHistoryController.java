@@ -25,8 +25,13 @@ import java.time.format.DateTimeFormatter;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
+
+import com.innovatewithomer.bizora.model.Customer;
+import com.innovatewithomer.bizora.service.CustomerService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SalesHistoryController {
 
@@ -37,6 +42,9 @@ public class SalesHistoryController {
 
     private final SaleService saleService =
             AppContext.saleService();
+
+    private final CustomerService customerService =
+            AppContext.customerService();
 
 
     // =========================================================
@@ -49,6 +57,9 @@ public class SalesHistoryController {
     private final ObservableList<Sale> filteredSales =
             FXCollections.observableArrayList();
 
+    private final Map<Long, String> customerNameMap =
+            new HashMap<>();
+
 
     // =========================================================
     // TABLE
@@ -57,29 +68,38 @@ public class SalesHistoryController {
     @FXML
     private TableView<Sale> salesTable;
 
+
     @FXML
     private TableColumn<Sale, String> invoiceColumn;
+
 
     @FXML
     private TableColumn<Sale, String> customerColumn;
 
+
     @FXML
     private TableColumn<Sale, String> dateColumn;
+
 
     @FXML
     private TableColumn<Sale, Double> subtotalColumn;
 
+
     @FXML
     private TableColumn<Sale, Double> discountColumn;
+
 
     @FXML
     private TableColumn<Sale, Double> taxColumn;
 
+
     @FXML
     private TableColumn<Sale, Double> totalColumn;
 
+
     @FXML
     private TableColumn<Sale, String> paymentStatusColumn;
+
 
     @FXML
     private TableColumn<Sale, String> saleStatusColumn;
@@ -92,11 +112,14 @@ public class SalesHistoryController {
     @FXML
     private TextField searchField;
 
+
     @FXML
     private ComboBox<String> paymentStatusComboBox;
 
+
     @FXML
     private ComboBox<String> saleStatusComboBox;
+
 
     @FXML
     private Label salesCountLabel;
@@ -106,8 +129,7 @@ public class SalesHistoryController {
     // FORMATTING
     // =========================================================
 
-    private static final DateTimeFormatter
-            DATE_FORMATTER =
+    private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern(
                     "dd MMM yyyy, hh:mm a"
             );
@@ -137,8 +159,10 @@ public class SalesHistoryController {
         invoiceColumn.setCellValueFactory(
                 cell ->
                         new SimpleStringProperty(
-                                cell.getValue()
-                                        .getInvoiceNumber()
+                                safeString(
+                                        cell.getValue()
+                                                .getInvoiceNumber()
+                                )
                         )
         );
 
@@ -149,7 +173,9 @@ public class SalesHistoryController {
                     Sale sale =
                             cell.getValue();
 
+
                     String customer;
+
 
                     if (sale.getCustomerId() == null) {
 
@@ -157,10 +183,12 @@ public class SalesHistoryController {
 
                     } else {
 
-                        customer =
-                                "Customer #"
-                                        + sale.getCustomerId();
+                        String name = customerNameMap.get(sale.getCustomerId());
+                        customer = (name != null && !name.isBlank())
+                                ? name
+                                : "Customer #" + sale.getCustomerId();
                     }
+
 
                     return new SimpleStringProperty(
                             customer
@@ -172,17 +200,20 @@ public class SalesHistoryController {
         dateColumn.setCellValueFactory(
                 cell -> {
 
-                    if (cell.getValue()
-                            .getCreatedAt() == null) {
+                    Sale sale =
+                            cell.getValue();
+
+
+                    if (sale.getCreatedAt() == null) {
 
                         return new SimpleStringProperty(
                                 ""
                         );
                     }
 
+
                     return new SimpleStringProperty(
-                            cell.getValue()
-                                    .getCreatedAt()
+                            sale.getCreatedAt()
                                     .format(
                                             DATE_FORMATTER
                                     )
@@ -270,6 +301,7 @@ public class SalesHistoryController {
                 )
         );
 
+
         paymentStatusComboBox.setValue(
                 "All"
         );
@@ -283,9 +315,24 @@ public class SalesHistoryController {
                 )
         );
 
+
         saleStatusComboBox.setValue(
                 "All"
         );
+
+
+        paymentStatusComboBox.valueProperty()
+                .addListener(
+                        (observable, oldValue, newValue) ->
+                                applyFilters()
+                );
+
+
+        saleStatusComboBox.valueProperty()
+                .addListener(
+                        (observable, oldValue, newValue) ->
+                                applyFilters()
+                );
     }
 
 
@@ -297,19 +344,28 @@ public class SalesHistoryController {
 
         try {
 
+            customerNameMap.clear();
+            try {
+                for (Customer customer : customerService.getAllCustomers()) {
+                    if (customer.getId() != null) {
+                        customerNameMap.put(customer.getId(), customer.getName());
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+
             List<Sale> result =
                     saleService.getAllSales();
+
 
             sales.setAll(
                     result
             );
 
+
             applyFilters();
 
         } catch (Exception e) {
-
-            e.printStackTrace();
-
             showError(
                     "Failed to load sales.\n\n"
                             + e.getMessage()
@@ -341,13 +397,13 @@ public class SalesHistoryController {
         String search =
                 searchField.getText();
 
+
         String paymentStatus =
-                paymentStatusComboBox
-                        .getValue();
+                paymentStatusComboBox.getValue();
+
 
         String saleStatus =
-                saleStatusComboBox
-                        .getValue();
+                saleStatusComboBox.getValue();
 
 
         String normalizedSearch =
@@ -361,67 +417,92 @@ public class SalesHistoryController {
 
         List<Sale> result =
                 sales.stream()
-                        .filter(sale -> {
+                        .filter(
+                                sale -> {
 
-                            if (normalizedSearch
-                                    .isEmpty()) {
+                                    if (normalizedSearch
+                                            .isEmpty()) {
 
-                                return true;
-                            }
+                                        return true;
+                                    }
 
-                            String invoice =
-                                    sale.getInvoiceNumber();
 
-                            return invoice != null
-                                    &&
-                                    invoice.toLowerCase(
-                                            Locale.ROOT
-                                    ).contains(
-                                            normalizedSearch
-                                    );
-                        })
-                        .filter(sale -> {
+                                    String invoice =
+                                            sale.getInvoiceNumber();
 
-                            if (paymentStatus == null
-                                    ||
-                                    paymentStatus.equals(
-                                            "All"
-                                    )) {
 
-                                return true;
-                            }
+                                    if (invoice == null) {
 
-                            return sale.getPaymentStatus()
-                                    .name()
-                                    .equals(
-                                            paymentStatus
-                                    );
-                        })
-                        .filter(sale -> {
+                                        return false;
+                                    }
 
-                            if (saleStatus == null
-                                    ||
-                                    saleStatus.equals(
-                                            "All"
-                                    )) {
 
-                                return true;
-                            }
+                                    return invoice
+                                            .toLowerCase(
+                                                    Locale.ROOT
+                                            )
+                                            .contains(
+                                                    normalizedSearch
+                                            );
+                                }
+                        )
+                        .filter(
+                                sale -> {
 
-                            return sale.getSaleStatus()
-                                    .name()
-                                    .equals(
-                                            saleStatus
-                                    );
-                        })
-                        .collect(
-                                Collectors.toList()
-                        );
+                                    if (paymentStatus == null
+                                            ||
+                                            paymentStatus.equals(
+                                                    "All"
+                                            )) {
+
+                                        return true;
+                                    }
+
+
+                                    PaymentStatus status =
+                                            sale.getPaymentStatus();
+
+
+                                    return status != null
+                                            &&
+                                            status.name()
+                                                    .equals(
+                                                            paymentStatus
+                                                    );
+                                }
+                        )
+                        .filter(
+                                sale -> {
+
+                                    if (saleStatus == null
+                                            ||
+                                            saleStatus.equals(
+                                                    "All"
+                                            )) {
+
+                                        return true;
+                                    }
+
+
+                                    SaleStatus status =
+                                            sale.getSaleStatus();
+
+
+                                    return status != null
+                                            &&
+                                            status.name()
+                                                    .equals(
+                                                            saleStatus
+                                                    );
+                                }
+                        )
+                        .toList();
 
 
         filteredSales.setAll(
                 result
         );
+
 
         updateSalesCount();
     }
@@ -436,13 +517,16 @@ public class SalesHistoryController {
 
         searchField.clear();
 
+
         paymentStatusComboBox.setValue(
                 "All"
         );
 
+
         saleStatusComboBox.setValue(
                 "All"
         );
+
 
         applyFilters();
     }
@@ -471,6 +555,7 @@ public class SalesHistoryController {
                         .getSelectionModel()
                         .getSelectedItem();
 
+
         if (selectedSale == null) {
 
             showWarning(
@@ -480,21 +565,35 @@ public class SalesHistoryController {
             return;
         }
 
-        /*
-         * For now we simply demonstrate that
-         * the correct sale has been selected.
-         *
-         * We will replace this with the
-         * Sale Details dialog in the next step.
-         */
-        Sale sale =
-                saleService.getSale(
-                        selectedSale.getId()
+
+        try {
+
+            Sale sale =
+                    saleService.getSale(
+                            selectedSale.getId()
+                    );
+
+
+            if (sale == null) {
+
+                showError(
+                        "The selected sale could not be found."
                 );
 
-        showSaleDetails(
-                sale
-        );
+                return;
+            }
+
+
+            showSaleDetails(
+                    sale
+            );
+
+        } catch (Exception e) {
+            showError(
+                    "Failed to load sale details.\n\n"
+                            + e.getMessage()
+            );
+        }
     }
 
 
@@ -505,62 +604,123 @@ public class SalesHistoryController {
         StringBuilder message =
                 new StringBuilder();
 
-        message.append(
-                "Invoice: "
-        ).append(
-                sale.getInvoiceNumber()
-        ).append(
-                "\n\n"
-        );
 
         message.append(
-                "Date: "
-        ).append(
-                sale.getCreatedAt()
-                        .format(
-                                DATE_FORMATTER
+                        "Invoice: "
+                )
+                .append(
+                        safeString(
+                                sale.getInvoiceNumber()
                         )
-        ).append(
-                "\n"
-        );
+                )
+                .append(
+                        "\n\n"
+                );
+
+
+        if (sale.getCreatedAt() != null) {
+
+            message.append(
+                            "Date: "
+                    )
+                    .append(
+                            sale.getCreatedAt()
+                                    .format(
+                                            DATE_FORMATTER
+                                    )
+                    )
+                    .append(
+                            "\n"
+                    );
+        }
+
 
         message.append(
-                "Subtotal: Rs. "
-        ).append(
-                sale.getSubtotal()
-        ).append(
-                "\n"
-        );
+                        "Subtotal: Rs. "
+                )
+                .append(
+                        formatAmount(
+                                sale.getSubtotal()
+                        )
+                )
+                .append(
+                        "\n"
+                );
+
 
         message.append(
-                "Discount: Rs. "
-        ).append(
-                sale.getDiscount()
-        ).append(
-                "\n"
-        );
+                        "Discount: Rs. "
+                )
+                .append(
+                        formatAmount(
+                                sale.getDiscount()
+                        )
+                )
+                .append(
+                        "\n"
+                );
+
 
         message.append(
-                "Tax: Rs. "
-        ).append(
-                sale.getTax()
-        ).append(
-                "\n"
-        );
+                        "Tax: Rs. "
+                )
+                .append(
+                        formatAmount(
+                                sale.getTax()
+                        )
+                )
+                .append(
+                        "\n"
+                );
+
 
         message.append(
-                "Total: Rs. "
-        ).append(
-                sale.getTotal()
-        ).append(
-                "\n\n"
-        );
+                        "Total: Rs. "
+                )
+                .append(
+                        formatAmount(
+                                sale.getTotal()
+                        )
+                )
+                .append(
+                        "\n\n"
+                );
+
 
         message.append(
-                "Items: "
-        ).append(
-                sale.getItems().size()
-        );
+                        "Payment Status: "
+                )
+                .append(
+                        formatPaymentStatus(
+                                sale.getPaymentStatus()
+                        )
+                )
+                .append(
+                        "\n"
+                );
+
+
+        message.append(
+                        "Sale Status: "
+                )
+                .append(
+                        formatSaleStatus(
+                                sale.getSaleStatus()
+                        )
+                )
+                .append(
+                        "\n\n"
+                );
+
+
+        message.append(
+                        "Items: "
+                )
+                .append(
+                        sale.getItems() == null
+                                ? 0
+                                : sale.getItems().size()
+                );
 
 
         Alert alert =
@@ -568,17 +728,23 @@ public class SalesHistoryController {
                         Alert.AlertType.INFORMATION
                 );
 
+
         alert.setTitle(
                 "Sale Details"
         );
 
+
         alert.setHeaderText(
-                sale.getInvoiceNumber()
+                safeString(
+                        sale.getInvoiceNumber()
+                )
         );
+
 
         alert.setContentText(
                 message.toString()
         );
+
 
         alert.showAndWait();
     }
@@ -592,6 +758,7 @@ public class SalesHistoryController {
 
         int count =
                 filteredSales.size();
+
 
         salesCountLabel.setText(
                 count
@@ -613,8 +780,10 @@ public class SalesHistoryController {
     ) {
 
         if (status == null) {
+
             return "Unknown";
         }
+
 
         return switch (status) {
 
@@ -635,8 +804,10 @@ public class SalesHistoryController {
     ) {
 
         if (status == null) {
+
             return "Unknown";
         }
+
 
         return switch (status) {
 
@@ -646,6 +817,77 @@ public class SalesHistoryController {
             case CANCELLED ->
                     "Cancelled";
         };
+    }
+
+
+    // =========================================================
+    // HELPERS
+    // =========================================================
+
+    private String safeString(
+            String value
+    ) {
+
+        return value == null
+                ? ""
+                : value;
+    }
+
+
+    private String formatAmount(
+            double amount
+    ) {
+
+        return String.format(
+                Locale.US,
+                "%,.2f",
+                amount
+        );
+    }
+
+
+    // =========================================================
+    // CANCEL SALE
+    // =========================================================
+
+    @FXML
+    private void handleCancelSale() {
+
+        Sale selectedSale =
+                salesTable
+                        .getSelectionModel()
+                        .getSelectedItem();
+
+        if (selectedSale == null) {
+            showWarning("Please select a sale to cancel.");
+            return;
+        }
+
+        if (selectedSale.getSaleStatus() == SaleStatus.CANCELLED) {
+            showWarning("This sale is already cancelled.");
+            return;
+        }
+
+        Alert alert =
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
+
+        alert.setTitle("Cancel Sale");
+        alert.setHeaderText("Cancel Invoice " + safeString(selectedSale.getInvoiceNumber()) + "?");
+        alert.setContentText("This will cancel the sale and restore all items back into product inventory. This action cannot be undone.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == javafx.scene.control.ButtonType.OK) {
+                try {
+                    saleService.cancelSale(selectedSale.getId());
+                    showSuccess("Sale " + safeString(selectedSale.getInvoiceNumber()) + " was cancelled successfully.\nStock has been restored.");
+                    loadSales();
+                } catch (Exception e) {
+                    showError("Failed to cancel sale.\n\n" + e.getMessage());
+                }
+            }
+        });
     }
 
 
@@ -662,12 +904,41 @@ public class SalesHistoryController {
                         Alert.AlertType.WARNING
                 );
 
+
+        alert.setTitle(
+                "Sales"
+        );
+
+
+        alert.setHeaderText(
+                null
+        );
+
+
+        alert.setContentText(
+                message
+        );
+
+
+        alert.showAndWait();
+    }
+
+
+    private void showSuccess(
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(
+                        Alert.AlertType.INFORMATION
+                );
+
         alert.setTitle(
                 "Sales"
         );
 
         alert.setHeaderText(
-                null
+                "Success"
         );
 
         alert.setContentText(
@@ -687,17 +958,21 @@ public class SalesHistoryController {
                         Alert.AlertType.ERROR
                 );
 
+
         alert.setTitle(
                 "Sales"
         );
+
 
         alert.setHeaderText(
                 "Error"
         );
 
+
         alert.setContentText(
                 message
         );
+
 
         alert.showAndWait();
     }

@@ -5,9 +5,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.VBox?>
@@ -20,7 +22,8 @@
         styleClass="dashboard-root">
 
     <center>
-
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll">
+        <content>
         <VBox spacing="24">
 
             <padding>
@@ -69,7 +72,7 @@
                  SUMMARY CARDS
                  ========================= -->
 
-            <GridPane hgap="16"
+            <GridPane fx:id="metricsGrid" hgap="16"
                       vgap="16">
 
                 <columnConstraints>
@@ -335,7 +338,7 @@
                 <Label text="Quick Actions"
                        styleClass="section-title"/>
 
-                <HBox spacing="10">
+                <FlowPane hgap="10" vgap="10">
 
                     <Button text="New Sale"
                             styleClass="secondary-button"
@@ -389,12 +392,13 @@
 
                     </Button>
 
-                </HBox>
+                </FlowPane>
 
             </VBox>
 
         </VBox>
-
+        </content>
+        </ScrollPane>
     </center>
 
 </BorderPane>

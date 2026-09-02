@@ -12,6 +12,8 @@ public class SaleItem {
 
     private double unitPrice;
 
+    private double costPrice;
+
     private double discount;
 
     private double subtotal;
@@ -34,6 +36,21 @@ public class SaleItem {
     }
 
     public SaleItem(
+            Long productId,
+            double quantity,
+            double unitPrice,
+            double costPrice,
+            double discount
+    ) {
+        this.productId = productId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.costPrice = costPrice;
+        this.discount = discount;
+        calculateSubtotal();
+    }
+
+    public SaleItem(
             Long id,
             Long saleId,
             Long productId,
@@ -47,6 +64,26 @@ public class SaleItem {
         this.productId = productId;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+        this.discount = discount;
+        this.subtotal = subtotal;
+    }
+
+    public SaleItem(
+            Long id,
+            Long saleId,
+            Long productId,
+            double quantity,
+            double unitPrice,
+            double costPrice,
+            double discount,
+            double subtotal
+    ) {
+        this.id = id;
+        this.saleId = saleId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.costPrice = costPrice;
         this.discount = discount;
         this.subtotal = subtotal;
     }
@@ -97,6 +134,14 @@ public class SaleItem {
     public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
         calculateSubtotal();
+    }
+
+    public double getCostPrice() {
+        return costPrice;
+    }
+
+    public void setCostPrice(double costPrice) {
+        this.costPrice = costPrice;
     }
 
     public double getDiscount() {

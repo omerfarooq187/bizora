@@ -55,6 +55,7 @@ class SaleItemRepositoryTest {
                     product_id INTEGER NOT NULL,
                     quantity REAL NOT NULL,
                     unit_price REAL NOT NULL,
+                    cost_price REAL NOT NULL DEFAULT 0,
                     discount REAL NOT NULL DEFAULT 0,
                     subtotal REAL NOT NULL DEFAULT 0,
 

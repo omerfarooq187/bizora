@@ -1,15 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      spacing="10">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.innovatewithomer.bizora.controller.ReportsController"
+            styleClass="content-root">
 
-    <Label text="Reports"
-           styleClass="page-title"/>
+    <!-- ===== HEADER ===== -->
+    <top>
+        <VBox spacing="4">
+            <padding><Insets top="0" right="0" bottom="18" left="0"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <VBox HBox.hgrow="ALWAYS" spacing="3">
+                    <Label text="Reports" styleClass="page-title"/>
+                    <Label text="Analyze your business performance over any date range." styleClass="page-subtitle"/>
+                </VBox>
+                <Button fx:id="generateReportButton" text="Generate Report" styleClass="primary-button"
+                        onAction="#handleGenerateReport" defaultButton="true"/>
+            </HBox>
+        </VBox>
+    </top>
 
-    <Label text="Manage your reports here."
-           styleClass="page-subtitle"/>
+    <!-- ===== MAIN CONTENT ===== -->
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll">
+        <content>
+        <VBox spacing="18">
 
-</VBox>
+            <!-- Date range card -->
+            <VBox styleClass="card" spacing="14">
+                <Label text="Date Range" style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#374151;"/>
+                <FlowPane hgap="14" vgap="10" alignment="CENTER_LEFT">
+                    <VBox spacing="5">
+                        <Label text="From" styleClass="form-label"/>
+                        <DatePicker fx:id="fromDate" prefWidth="160"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="To" styleClass="form-label"/>
+                        <DatePicker fx:id="toDate" prefWidth="160"/>
+                    </VBox>
+                    <Button fx:id="generateButton" text="Generate" styleClass="primary-button" onAction="#handleGenerateReport"
+                            style="-fx-padding:10px 20px;"/>
+                    <Button text="This Month" styleClass="secondary-button" onAction="#handleThisMonth"/>
+                    <Button text="Last 30 Days" styleClass="secondary-button" onAction="#handleLast30Days"/>
+                    <Button text="This Year" styleClass="secondary-button" onAction="#handleThisYear"/>
+                </FlowPane>
+                <Label fx:id="reportStatusLabel" text=""/>
+            </VBox>
+
+            <!-- Summary metric cards -->
+            <GridPane fx:id="metricsGrid" hgap="14" vgap="14">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                </columnConstraints>
+
+                <!-- Sales -->
+                <VBox styleClass="metric-card" spacing="6" GridPane.columnIndex="0">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="S" styleClass="metric-badge metric-badge-sales"/>
+                        <Label text="Sales Revenue" styleClass="metric-title"/>
+                    </HBox>
+                    <Label fx:id="salesRevenueLabel" text="\$0.00" styleClass="metric-value"/>
+                    <Label fx:id="salesCountLabel"   text="0 transactions" styleClass="metric-description"/>
+                </VBox>
+
+                <!-- Cost of goods sold -->
+                <VBox styleClass="metric-card" spacing="6" GridPane.columnIndex="1">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="C" styleClass="metric-badge metric-badge-cost"/>
+                        <Label text="Cost of Goods Sold" styleClass="metric-title"/>
+                    </HBox>
+                    <Label fx:id="purchaseCostLabel"  text="\$0.00" styleClass="metric-value"/>
+                    <Label fx:id="purchaseCountLabel" text="Cost of 0 completed sales" styleClass="metric-description"/>
+                </VBox>
+
+                <!-- Expenses -->
+                <VBox styleClass="metric-card" spacing="6" GridPane.columnIndex="2">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="E" styleClass="metric-badge metric-badge-expense"/>
+                        <Label text="Total Expenses" styleClass="metric-title"/>
+                    </HBox>
+                    <Label fx:id="expensesTotalLabel" text="\$0.00" styleClass="metric-value"/>
+                    <Label fx:id="expenseCountLabel"  text="0 entries" styleClass="metric-description"/>
+                </VBox>
+
+                <!-- Net Profit -->
+                <VBox styleClass="metric-card" spacing="6" GridPane.columnIndex="3">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="N" styleClass="metric-badge metric-badge-profit"/>
+                        <Label text="Net Profit" styleClass="metric-title"/>
+                    </HBox>
+                    <Label fx:id="netProfitLabel"   text="\$0.00" styleClass="metric-value"/>
+                    <Label fx:id="grossProfitLabel" text="Gross: $0.00" styleClass="metric-description"/>
+                </VBox>
+            </GridPane>
+
+            <!-- Expense breakdown by category -->
+            <VBox styleClass="card" spacing="12">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Expenses by Category" HBox.hgrow="ALWAYS"
+                           style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#374151;"/>
+                </HBox>
+                <TableView fx:id="categoryTable" prefHeight="220" styleClass="table-view">
+                    <columns>
+                        <TableColumn fx:id="catNameColumn"   text="Category"  prefWidth="250"/>
+                        <TableColumn fx:id="catAmountColumn" text="Amount"    prefWidth="160" style="-fx-alignment:CENTER_RIGHT;"/>
+                        <TableColumn fx:id="catShareColumn"  text="Share %"   prefWidth="120" style="-fx-alignment:CENTER;"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Generate a report to see the breakdown." style="-fx-text-fill:#9ca3af;"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+        </VBox>
+        </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

@@ -8,7 +8,7 @@ public class FinancialSummary {
     private LocalDate to;
 
     private double totalSales;
-    private double totalPurchases;
+    private double totalCostOfGoodsSold;
     private double totalExpenses;
 
     private double grossProfit;
@@ -21,14 +21,14 @@ public class FinancialSummary {
             LocalDate from,
             LocalDate to,
             double totalSales,
-            double totalPurchases,
+            double totalCostOfGoodsSold,
             double totalExpenses
     ) {
         this.from = from;
         this.to = to;
 
         this.totalSales = totalSales;
-        this.totalPurchases = totalPurchases;
+        this.totalCostOfGoodsSold = totalCostOfGoodsSold;
         this.totalExpenses = totalExpenses;
 
         calculateProfits();
@@ -38,7 +38,7 @@ public class FinancialSummary {
 
         grossProfit =
                 totalSales
-                        - totalPurchases;
+                        - totalCostOfGoodsSold;
 
         netProfit =
                 grossProfit
@@ -67,14 +67,28 @@ public class FinancialSummary {
 
     public void setTotalSales(double totalSales) {
         this.totalSales = totalSales;
+        calculateProfits();
     }
 
+    public double getTotalCostOfGoodsSold() {
+        return totalCostOfGoodsSold;
+    }
+
+    public void setTotalCostOfGoodsSold(double totalCostOfGoodsSold) {
+        this.totalCostOfGoodsSold = totalCostOfGoodsSold;
+        calculateProfits();
+    }
+
+    /** @deprecated Use {@link #getTotalCostOfGoodsSold()}. */
+    @Deprecated
     public double getTotalPurchases() {
-        return totalPurchases;
+        return totalCostOfGoodsSold;
     }
 
+    /** @deprecated Use {@link #setTotalCostOfGoodsSold(double)}. */
+    @Deprecated
     public void setTotalPurchases(double totalPurchases) {
-        this.totalPurchases = totalPurchases;
+        setTotalCostOfGoodsSold(totalPurchases);
     }
 
     public double getTotalExpenses() {
@@ -83,6 +97,7 @@ public class FinancialSummary {
 
     public void setTotalExpenses(double totalExpenses) {
         this.totalExpenses = totalExpenses;
+        calculateProfits();
     }
 
     public double getGrossProfit() {

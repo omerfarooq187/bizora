@@ -273,6 +273,23 @@
                         styleClass="section-title"/>
 
 
+                <!-- CUSTOMER -->
+
+                <VBox
+                        spacing="5">
+
+                    <Label
+                            text="Customer"
+                            styleClass="secondary-text"/>
+
+                    <ComboBox
+                            fx:id="customerComboBox"
+                            promptText="Walk-in Customer"
+                            maxWidth="Infinity"/>
+
+                </VBox>
+
+
                 <!-- SUBTOTAL -->
 
                 <HBox
@@ -315,7 +332,7 @@
                         spacing="10">
 
                     <Label
-                            text="Tax:"
+                            text="Tax (%):"
                             HBox.hgrow="ALWAYS"/>
 
                     <TextField

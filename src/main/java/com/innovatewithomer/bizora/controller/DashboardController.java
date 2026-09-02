@@ -5,20 +5,25 @@ import com.innovatewithomer.bizora.model.dashboard.DashboardSummary;
 import com.innovatewithomer.bizora.model.dashboard.LowStockProduct;
 import com.innovatewithomer.bizora.model.dashboard.RecentSale;
 import com.innovatewithomer.bizora.service.DashboardService;
+import com.innovatewithomer.bizora.util.CurrencyFormatter;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
-import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 public class DashboardController {
 
@@ -57,6 +62,9 @@ public class DashboardController {
     @FXML
     private Label todayTransactionsLabel;
 
+    @FXML
+    private GridPane metricsGrid;
+
 
     // =========================================
     // RECENT SALES TABLE
@@ -70,6 +78,9 @@ public class DashboardController {
 
     @FXML
     private TableColumn<RecentSale, LocalDateTime> dateColumn;
+
+    @FXML
+    private TableColumn<RecentSale, String> customerColumn;
 
     @FXML
     private TableColumn<RecentSale, Double> amountColumn;
@@ -95,11 +106,6 @@ public class DashboardController {
     private TableColumn<LowStockProduct, Double> lowStockQuantityColumn;
 
 
-    private static final NumberFormat CURRENCY_FORMAT =
-            NumberFormat.getNumberInstance(
-                    Locale.US
-            );
-
     private static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern(
                     "dd MMM yyyy, hh:mm a"
@@ -109,26 +115,53 @@ public class DashboardController {
     @FXML
     private void initialize() {
 
-        configureCurrencyFormat();
-
         configureRecentSalesTable();
 
         configureLowStockTable();
 
+        configureResponsiveMetrics();
+
         loadDashboard();
+    }
+
+    private void configureResponsiveMetrics() {
+        metricsGrid.widthProperty().addListener(
+                (observable, oldWidth, newWidth) ->
+                        updateMetricLayout(newWidth.doubleValue())
+        );
+        javafx.application.Platform.runLater(
+                () -> updateMetricLayout(metricsGrid.getWidth())
+        );
+    }
+
+    private void updateMetricLayout(double width) {
+        int columns = width < 640 ? 1 : width < 1080 ? 2 : 4;
+
+        metricsGrid.getColumnConstraints().clear();
+        for (int index = 0; index < columns; index++) {
+            ColumnConstraints constraint = new ColumnConstraints();
+            constraint.setPercentWidth(100.0 / columns);
+            constraint.setHgrow(Priority.ALWAYS);
+            constraint.setFillWidth(true);
+            metricsGrid.getColumnConstraints().add(constraint);
+        }
+
+        List<Node> cards = List.copyOf(metricsGrid.getChildren());
+        for (int index = 0; index < cards.size(); index++) {
+            Node card = cards.get(index);
+            GridPane.setColumnIndex(card, index % columns);
+            GridPane.setRowIndex(card, index / columns);
+            GridPane.setHgrow(card, Priority.ALWAYS);
+            if (card instanceof Region region) {
+                region.setMaxWidth(Double.MAX_VALUE);
+            }
+        }
     }
 
 
     // =========================================
     // INITIALIZATION
     // =========================================
-
-    private void configureCurrencyFormat() {
-
-        CURRENCY_FORMAT.setMinimumFractionDigits(2);
-        CURRENCY_FORMAT.setMaximumFractionDigits(2);
-    }
-
 
     private void configureRecentSalesTable() {
 
@@ -143,6 +176,14 @@ public class DashboardController {
                         "createdAt"
                 )
         );
+
+        if (customerColumn != null) {
+            customerColumn.setCellValueFactory(
+                    new PropertyValueFactory<>(
+                            "customerName"
+                    )
+            );
+        }
 
         amountColumn.setCellValueFactory(
                 new PropertyValueFactory<>(
@@ -197,12 +238,18 @@ public class DashboardController {
     // =========================================
 
     private void loadDashboard() {
-
-        loadSummary();
-
-        loadRecentSales();
-
-        loadLowStockProducts();
+        try {
+            loadSummary();
+            loadRecentSales();
+            loadLowStockProducts();
+        } catch (RuntimeException e) {
+            recentSales.clear();
+            lowStockProducts.clear();
+            showError(
+                    "Dashboard data could not be loaded.\n\n"
+                            + e.getMessage()
+            );
+        }
     }
 
 
@@ -235,25 +282,28 @@ public class DashboardController {
                 )
         );
 
-
-        /*
-         * These metrics are not yet provided
-         * by DashboardSummary.
-         *
-         * Keep them unavailable instead of
-         * displaying misleading values.
-         */
-
         if (todayPurchasesLabel != null) {
-            todayPurchasesLabel.setText("—");
+            todayPurchasesLabel.setText(
+                    formatCurrency(
+                            summary.getTodayPurchases()
+                    )
+            );
         }
 
         if (todayExpensesLabel != null) {
-            todayExpensesLabel.setText("—");
+            todayExpensesLabel.setText(
+                    formatCurrency(
+                            summary.getTodayExpenses()
+                    )
+            );
         }
 
         if (todayProfitLabel != null) {
-            todayProfitLabel.setText("—");
+            todayProfitLabel.setText(
+                    formatCurrency(
+                            summary.getTodayProfit()
+                    )
+            );
         }
     }
 
@@ -284,8 +334,7 @@ public class DashboardController {
             double amount
     ) {
 
-        return "Rs. " +
-                CURRENCY_FORMAT.format(amount);
+        return CurrencyFormatter.format(amount);
     }
 
 
@@ -296,52 +345,75 @@ public class DashboardController {
     @FXML
     private void handleNewSale() {
 
-        /*
-         * Sales UI will be implemented later.
-         *
-         * We intentionally do not create
-         * fake navigation here yet.
-         */
+        if (MainController.getInstance() != null) {
+            MainController.getInstance().showSales();
+        }
     }
 
 
     @FXML
     private void handleAddProduct() {
 
-        /*
-         * ProductController currently owns
-         * the Add Product dialog.
-         *
-         * Dashboard navigation can be wired
-         * here after the MainController/ViewManager
-         * navigation is finalized.
-         */
+        try {
+            javafx.fxml.FXMLLoader loader =
+                    new javafx.fxml.FXMLLoader(
+                            getClass().getResource(
+                                    "/com/innovatewithomer/bizora/fxml/add-product-dialog.fxml"
+                            )
+                    );
+
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Add Product");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            loadDashboard();
+
+        } catch (java.io.IOException e) {
+            showError(
+                    "The product form could not be opened.\n\n"
+                            + e.getMessage()
+            );
+        }
+    }
+
+
+    private void showError(String message) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Dashboard");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 
     @FXML
     private void handleStockAdjustment() {
 
-        /*
-         * Inventory UI will be implemented later.
-         */
+        if (MainController.getInstance() != null) {
+            MainController.getInstance().showInventory();
+        }
     }
 
 
     @FXML
     private void handleAddExpense() {
 
-        /*
-         * Expense UI will be implemented later.
-         */
+        if (MainController.getInstance() != null) {
+            MainController.getInstance().showExpenses();
+        }
     }
 
 
     @FXML
     private void handleViewSales() {
 
-        /*
-         * Sales UI/navigation will be implemented later.
-         */
+        if (MainController.getInstance() != null) {
+            MainController.getInstance().showSales();
+        }
     }
 }

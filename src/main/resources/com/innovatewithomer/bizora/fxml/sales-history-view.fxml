@@ -175,6 +175,11 @@
             </padding>
 
             <Button
+                    text="Cancel Sale"
+                    onAction="#handleCancelSale"
+                    styleClass="danger-button"/>
+
+            <Button
                     text="View Details"
                     onAction="#handleViewDetails"
                     styleClass="primary-button"/>

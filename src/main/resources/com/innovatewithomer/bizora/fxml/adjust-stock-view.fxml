@@ -11,6 +11,7 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.innovatewithomer.bizora.controller.AdjustStockController"
+      stylesheets="@../css/main.css"
       spacing="16"
       prefWidth="420"
       styleClass="dialog-root">
@@ -67,10 +68,12 @@
 
         <Button text="Cancel"
                 styleClass="secondary-button"
+                cancelButton="true"
                 onAction="#handleCancel"/>
 
         <Button text="Save Adjustment"
                 styleClass="primary-button"
+                defaultButton="true"
                 onAction="#handleSave">
 
             <graphic>

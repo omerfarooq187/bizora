@@ -105,7 +105,7 @@ public class AdjustStockController {
             return;
         }
 
-        if (actualStock < 0) {
+        if (!Double.isFinite(actualStock) || actualStock < 0) {
 
             showError(
                     "Stock quantity cannot be negative."

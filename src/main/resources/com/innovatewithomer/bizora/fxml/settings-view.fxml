@@ -1,15 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      spacing="10">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.innovatewithomer.bizora.controller.SettingsController"
+            styleClass="content-root">
 
-    <Label text="Settings"
-           styleClass="page-title"/>
+    <!-- ===== HEADER ===== -->
+    <top>
+        <VBox spacing="4">
+            <padding><Insets top="0" right="0" bottom="18" left="0"/></padding>
+            <Label text="Settings" styleClass="page-title"/>
+            <Label text="Configure your business preferences." styleClass="page-subtitle"/>
+        </VBox>
+    </top>
 
-    <Label text="Manage your settings here."
-           styleClass="page-subtitle"/>
+    <!-- ===== SETTINGS SECTIONS ===== -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="settings-scroll" hbarPolicy="NEVER">
+            <VBox spacing="18">
 
-</VBox>
+                <!-- Business Info -->
+                <VBox styleClass="card" spacing="16">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <FontIcon iconLiteral="fas-store" iconSize="16" style="-fx-icon-color:#4f46e5;"/>
+                        <Label text="Business Information" style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#111827;"/>
+                    </HBox>
+                    <Separator/>
+                    <GridPane hgap="20" vgap="14">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="180" minWidth="140"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <Label text="Business Name" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="businessNameField" promptText="e.g. Bizora Store"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Owner Name" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="ownerNameField" promptText="e.g. Omer Farooq"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Phone" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="businessPhoneField" promptText="+1 234 567 8900"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Email" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="businessEmailField" promptText="contact@yourbusiness.com"
+                                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="Address" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                        <TextArea fx:id="businessAddressField" promptText="Street, City, Country"
+                                  prefRowCount="2" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    </GridPane>
+                </VBox>
+
+                <!-- Currency & Format -->
+                <VBox styleClass="card" spacing="16">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <FontIcon iconLiteral="fas-dollar-sign" iconSize="16" style="-fx-icon-color:#f59e0b;"/>
+                        <Label text="Currency &amp; Formatting" style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#111827;"/>
+                    </HBox>
+                    <Separator/>
+                    <GridPane hgap="20" vgap="14">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="180" minWidth="140"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <Label text="Currency Symbol" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="currencySymbolCombo" prefWidth="120"
+                                  GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Tax Rate (%)" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                            <TextField fx:id="taxRateField" promptText="0.00" prefWidth="100"/>
+                            <Label text="\%" styleClass="secondary-text"/>
+                        </HBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- Receipt -->
+                <VBox styleClass="card" spacing="16">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <FontIcon iconLiteral="fas-file-invoice" iconSize="16" style="-fx-icon-color:#10b981;"/>
+                        <Label text="Receipt &amp; Invoice" style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#111827;"/>
+                    </HBox>
+                    <Separator/>
+                    <GridPane hgap="20" vgap="14">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="180" minWidth="140"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <Label text="Invoice Prefix" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="invoicePrefixField" promptText="e.g. INV-"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="140"/>
+
+                        <Label text="Receipt Footer" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextArea fx:id="receiptFooterField" promptText="Thank you for your business!"
+                                  prefRowCount="2" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    </GridPane>
+                </VBox>
+
+                <!-- About & developer attribution -->
+                <HBox styleClass="card about-card" spacing="20" alignment="CENTER_LEFT">
+                    <ImageView fitWidth="108" fitHeight="108" preserveRatio="true" smooth="true">
+                        <image><Image url="@../images/bizora_logo.png"/></image>
+                    </ImageView>
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label text="Bizora" styleClass="about-title"/>
+                        <Label text="Business management made clear, fast, and practical."
+                               styleClass="secondary-text" wrapText="true"/>
+                        <Label text="Designed and developed by InnovateWithOmer"
+                               styleClass="about-developer"/>
+                        <Hyperlink text="innovatewithomer.dev" styleClass="website-link"
+                                   onAction="#handleOpenDeveloperWebsite"/>
+                        <Label fx:id="aboutCopyrightLabel" text="© 2026 InnovateWithOmer. All rights reserved."
+                               styleClass="copyright-label"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Save button row -->
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <Button text="Reset to Defaults" styleClass="secondary-button" onAction="#handleReset"/>
+                    <Button text="Save Settings" styleClass="primary-button" onAction="#handleSave">
+                        <graphic><FontIcon iconLiteral="fas-save" iconSize="13"/></graphic>
+                    </Button>
+                </HBox>
+
+                <!-- Status message -->
+                <Label fx:id="statusLabel" text="" styleClass="success-message"/>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

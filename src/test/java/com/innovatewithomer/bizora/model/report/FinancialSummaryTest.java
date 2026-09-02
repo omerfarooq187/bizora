@@ -138,7 +138,7 @@ class FinancialSummaryTest {
 
         assertEquals(
                 60000,
-                summary.getTotalPurchases()
+                summary.getTotalCostOfGoodsSold()
         );
 
         assertEquals(
@@ -160,7 +160,7 @@ class FinancialSummaryTest {
                 );
 
         summary.setTotalSales(150000);
-        summary.setTotalPurchases(80000);
+        summary.setTotalCostOfGoodsSold(80000);
         summary.setTotalExpenses(20000);
 
         summary.calculateProfits();
@@ -197,7 +197,7 @@ class FinancialSummaryTest {
 
         assertEquals(
                 0,
-                summary.getTotalPurchases()
+                summary.getTotalCostOfGoodsSold()
         );
 
         assertEquals(

@@ -9,17 +9,23 @@ import java.sql.Statement;
 
 public final class DatabaseManager {
 
-    private static String jdbcUrl =
-            DatabaseConfig.getJdbcUrl();
+    private static String jdbcUrl;
 
     private DatabaseManager() {
+    }
+
+    private static synchronized String resolveJdbcUrl() {
+        if (jdbcUrl == null) {
+            jdbcUrl = DatabaseConfig.getJdbcUrl();
+        }
+        return jdbcUrl;
     }
 
     public static Connection getConnection()
             throws SQLException {
 
         Connection connection =
-                DriverManager.getConnection(jdbcUrl);
+                DriverManager.getConnection(resolveJdbcUrl());
 
         try (Statement statement =
                      connection.createStatement()) {
@@ -37,7 +43,6 @@ public final class DatabaseManager {
     }
 
     public static void resetJdbcUrl() {
-        DatabaseManager.jdbcUrl =
-                DatabaseConfig.getJdbcUrl();
+        DatabaseManager.jdbcUrl = null;
     }
 }

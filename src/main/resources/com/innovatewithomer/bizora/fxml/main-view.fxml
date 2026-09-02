@@ -3,6 +3,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -10,6 +13,7 @@
 
 <?import javafx.scene.layout.StackPane?>
 <BorderPane
+        fx:id="rootPane"
         xmlns="http://javafx.com/javafx/21"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="com.innovatewithomer.bizora.controller.MainController"
@@ -23,24 +27,25 @@
 
         <HBox styleClass="top-bar"
               alignment="CENTER_LEFT"
-              prefHeight="65">
+              prefHeight="72">
 
-            <Label text="BIZORA"
-                   styleClass="app-name"/>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <StackPane styleClass="brand-mark">
+                    <ImageView fx:id="brandLogoImage" fitWidth="40" fitHeight="40"
+                               preserveRatio="true" smooth="true">
+                        <image><Image url="@../images/bizora_logo.png"/></image>
+                    </ImageView>
+                </StackPane>
+                <VBox spacing="1">
+                    <Label fx:id="businessNameLabel" text="BIZORA" styleClass="app-name"/>
+                    <Label text="Business workspace" styleClass="app-kicker"/>
+                </VBox>
+            </HBox>
 
             <HBox HBox.hgrow="ALWAYS"/>
 
-            <Label text="Omer"
-                   styleClass="user-name"/>
-
-            <Button styleClass="nav-button">
-
-                <graphic>
-                    <FontIcon iconLiteral="fas-cog"
-                              iconSize="18"/>
-                </graphic>
-
-            </Button>
+            <Button text="Settings" styleClass="top-settings-button"
+                    onAction="#showSettings" accessibleText="Open settings"/>
 
         </HBox>
 
@@ -53,8 +58,10 @@
 
     <left>
 
-        <VBox styleClass="sidebar"
-              prefWidth="220">
+        <VBox fx:id="sidebar" styleClass="sidebar"
+              prefWidth="238" spacing="4">
+
+            <Label fx:id="overviewLabel" text="OVERVIEW" styleClass="nav-section-label"/>
 
             <Button fx:id="dashboardButton"
                     text="Dashboard"
@@ -83,6 +90,8 @@
                 </graphic>
 
             </Button>
+
+            <Label fx:id="operationsLabel" text="OPERATIONS" styleClass="nav-section-label nav-section-spaced"/>
 
             <Button fx:id="inventoryButton"
                     text="Inventory"
@@ -168,7 +177,11 @@
 
             </Button>
 
+            <VBox VBox.vgrow="ALWAYS"/>
+
             <Separator VBox.vgrow="NEVER"/>
+
+            <Label fx:id="preferencesLabel" text="PREFERENCES" styleClass="nav-section-label nav-section-spaced"/>
 
             <Button fx:id="settingsButton"
                     text="Settings"
@@ -183,6 +196,14 @@
                 </graphic>
 
             </Button>
+
+            <VBox fx:id="developerFooter" styleClass="developer-footer" spacing="1">
+                <Label text="Developed by" styleClass="developer-caption"/>
+                <Hyperlink text="InnovateWithOmer" styleClass="developer-link"
+                           onAction="#handleOpenDeveloperWebsite"/>
+                <Label fx:id="copyrightLabel" text="© 2026 InnovateWithOmer"
+                       styleClass="copyright-label"/>
+            </VBox>
 
         </VBox>
 

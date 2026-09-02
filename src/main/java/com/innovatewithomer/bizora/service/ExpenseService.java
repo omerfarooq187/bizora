@@ -117,7 +117,8 @@ public class ExpenseService {
             );
         }
 
-        if (expense.getAmount() <= 0) {
+        if (!Double.isFinite(expense.getAmount())
+                || expense.getAmount() <= 0) {
 
             throw new IllegalArgumentException(
                     "Expense amount must be greater than zero."

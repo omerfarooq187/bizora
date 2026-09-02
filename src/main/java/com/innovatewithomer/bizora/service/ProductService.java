@@ -88,21 +88,24 @@ public class ProductService {
             );
         }
 
-        if (product.getSellingPrice() < 0) {
+        if (!Double.isFinite(product.getSellingPrice())
+                || product.getSellingPrice() < 0) {
 
             throw new IllegalArgumentException(
                     "Selling price cannot be negative."
             );
         }
 
-        if (product.getPurchasePrice() < 0) {
+        if (!Double.isFinite(product.getPurchasePrice())
+                || product.getPurchasePrice() < 0) {
 
             throw new IllegalArgumentException(
                     "Purchase price cannot be negative."
             );
         }
 
-        if (product.getStockQuantity() < 0) {
+        if (!Double.isFinite(product.getStockQuantity())
+                || product.getStockQuantity() < 0) {
 
             throw new IllegalArgumentException(
                     "Stock quantity cannot be negative."

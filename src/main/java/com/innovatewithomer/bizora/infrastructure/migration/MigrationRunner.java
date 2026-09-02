@@ -19,7 +19,8 @@ public class MigrationRunner {
             new V5__CreateCustomersAndSuppliersTables(),
             new V6__AddSupplierToPurchases(),
             new V7__CreatePayments(),
-            new V8__CreateExpensesTable()
+            new V8__CreateExpensesTable(),
+            new V9__AddCostPriceToSaleItems()
     );
 
     public void run(Connection connection) throws SQLException {
@@ -29,17 +30,45 @@ public class MigrationRunner {
         for (Migration migration : migrations) {
 
             if (!isApplied(connection, migration.version())) {
+                applyMigration(connection, migration);
+            }
+        }
+    }
 
-                migration.migrate(connection);
+    private void applyMigration(
+            Connection connection,
+            Migration migration
+    ) throws SQLException {
+        boolean managesTransaction = connection.getAutoCommit();
 
-                recordMigration(connection, migration);
+        if (managesTransaction) {
+            connection.setAutoCommit(false);
+        }
 
-                System.out.println(
-                        "Migration V" +
-                                migration.version() +
-                                " applied: " +
-                                migration.description()
-                );
+        try {
+            migration.migrate(connection);
+            recordMigration(connection, migration);
+
+            if (managesTransaction) {
+                connection.commit();
+            }
+
+            System.out.println(
+                    "Migration V" + migration.version()
+                            + " applied: " + migration.description()
+            );
+        } catch (SQLException | RuntimeException e) {
+            if (managesTransaction) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackException) {
+                    e.addSuppressed(rollbackException);
+                }
+            }
+            throw e;
+        } finally {
+            if (managesTransaction) {
+                connection.setAutoCommit(true);
             }
         }
     }

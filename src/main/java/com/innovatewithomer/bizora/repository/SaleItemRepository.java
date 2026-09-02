@@ -22,10 +22,11 @@ public class SaleItemRepository
                     product_id,
                     quantity,
                     unit_price,
+                    cost_price,
                     discount,
                     subtotal
                 )
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (PreparedStatement statement =
@@ -56,11 +57,16 @@ public class SaleItemRepository
 
             statement.setDouble(
                     5,
-                    item.getDiscount()
+                    item.getCostPrice()
             );
 
             statement.setDouble(
                     6,
+                    item.getDiscount()
+            );
+
+            statement.setDouble(
+                    7,
                     item.getSubtotal()
             );
 
@@ -113,6 +119,7 @@ public class SaleItemRepository
                     product_id,
                     quantity,
                     unit_price,
+                    cost_price,
                     discount,
                     subtotal
                 FROM sale_items
@@ -153,6 +160,7 @@ public class SaleItemRepository
                 resultSet.getLong("product_id"),
                 resultSet.getDouble("quantity"),
                 resultSet.getDouble("unit_price"),
+                resultSet.getDouble("cost_price"),
                 resultSet.getDouble("discount"),
                 resultSet.getDouble("subtotal")
         );

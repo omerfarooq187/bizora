@@ -139,15 +139,17 @@ public class SaleService {
                         sale.getId()
                 );
 
-                saleItemRepository.save(
-                        connection,
-                        item
-                );
-
                 Product product =
                         products.get(
                                 item.getProductId()
                         );
+
+                item.setCostPrice(product.getPurchasePrice());
+
+                saleItemRepository.save(
+                        connection,
+                        item
+                );
 
                 double newStock =
                         product.getStockQuantity()
@@ -367,14 +369,14 @@ public class SaleService {
             );
         }
 
-        if (sale.getDiscount() < 0) {
+        if (!Double.isFinite(sale.getDiscount()) || sale.getDiscount() < 0) {
 
             throw new IllegalArgumentException(
                     "Discount cannot be negative."
             );
         }
 
-        if (sale.getTax() < 0) {
+        if (!Double.isFinite(sale.getTax()) || sale.getTax() < 0) {
 
             throw new IllegalArgumentException(
                     "Tax cannot be negative."
@@ -410,21 +412,21 @@ public class SaleService {
                 );
             }
 
-            if (item.getQuantity() <= 0) {
+            if (!Double.isFinite(item.getQuantity()) || item.getQuantity() <= 0) {
 
                 throw new IllegalArgumentException(
                         "Item quantity must be greater than zero."
                 );
             }
 
-            if (item.getUnitPrice() < 0) {
+            if (!Double.isFinite(item.getUnitPrice()) || item.getUnitPrice() < 0) {
 
                 throw new IllegalArgumentException(
                         "Unit price cannot be negative."
                 );
             }
 
-            if (item.getDiscount() < 0) {
+            if (!Double.isFinite(item.getDiscount()) || item.getDiscount() < 0) {
 
                 throw new IllegalArgumentException(
                         "Item discount cannot be negative."

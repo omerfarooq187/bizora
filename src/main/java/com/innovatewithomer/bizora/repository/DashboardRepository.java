@@ -30,14 +30,14 @@ public class DashboardRepository
                             0
                         )
                         FROM sales
-                        WHERE DATE(created_at) = DATE('now')
+                        WHERE DATE(created_at) = DATE('now', 'localtime')
                         AND sale_status = 'COMPLETED'
                     ) AS today_revenue,
 
                     (
                         SELECT COUNT(*)
                         FROM sales
-                        WHERE DATE(created_at) = DATE('now')
+                        WHERE DATE(created_at) = DATE('now', 'localtime')
                         AND sale_status = 'COMPLETED'
                     ) AS today_sales_count,
 
@@ -50,7 +50,37 @@ public class DashboardRepository
                         SELECT COUNT(*)
                         FROM products
                         WHERE stock_quantity <= 5
-                    ) AS low_stock_count
+                    ) AS low_stock_count,
+
+                    (
+                        SELECT COALESCE(
+                            SUM(total),
+                            0
+                        )
+                        FROM purchases
+                        WHERE DATE(created_at) = DATE('now', 'localtime')
+                        AND purchase_status != 'CANCELLED'
+                    ) AS today_purchases,
+
+                    (
+                        SELECT COALESCE(
+                            SUM(item.quantity * item.cost_price),
+                            0
+                        )
+                        FROM sale_items item
+                        JOIN sales sale ON sale.id = item.sale_id
+                        WHERE DATE(sale.created_at) = DATE('now', 'localtime')
+                        AND sale.sale_status = 'COMPLETED'
+                    ) AS today_cogs,
+
+                    (
+                        SELECT COALESCE(
+                            SUM(amount),
+                            0
+                        )
+                        FROM expenses
+                        WHERE expense_date = DATE('now', 'localtime')
+                    ) AS today_expenses
                 """;
 
         try (
@@ -70,26 +100,27 @@ public class DashboardRepository
                         0,
                         0,
                         0,
+                        0,
+                        0,
+                        0,
                         0
                 );
             }
 
+            double revenue = resultSet.getDouble("today_revenue");
+            double purchases = resultSet.getDouble("today_purchases");
+            double costOfGoodsSold = resultSet.getDouble("today_cogs");
+            double expenses = resultSet.getDouble("today_expenses");
+            double profit = revenue - costOfGoodsSold - expenses;
+
             return new DashboardSummary(
-                    resultSet.getDouble(
-                            "today_revenue"
-                    ),
-
-                    resultSet.getLong(
-                            "today_sales_count"
-                    ),
-
-                    resultSet.getLong(
-                            "total_product_count"
-                    ),
-
-                    resultSet.getLong(
-                            "low_stock_count"
-                    )
+                    revenue,
+                    resultSet.getLong("today_sales_count"),
+                    resultSet.getLong("total_product_count"),
+                    resultSet.getLong("low_stock_count"),
+                    purchases,
+                    expenses,
+                    profit
             );
 
         } catch (SQLException e) {
@@ -108,14 +139,16 @@ public class DashboardRepository
 
         String sql = """
                 SELECT
-                    id,
-                    invoice_number,
-                    total,
-                    payment_status,
-                    sale_status,
-                    created_at
-                FROM sales
-                ORDER BY created_at DESC
+                    s.id,
+                    s.invoice_number,
+                    c.name AS customer_name,
+                    s.total,
+                    s.payment_status,
+                    s.sale_status,
+                    s.created_at
+                FROM sales s
+                LEFT JOIN customers c ON s.customer_id = c.id
+                ORDER BY s.created_at DESC
                 LIMIT ?
                 """;
 
@@ -225,6 +258,8 @@ public class DashboardRepository
                         "invoice_number"
                 ),
 
+                resultSet.getString("customer_name"),
+
                 resultSet.getDouble(
                         "total"
                 ),
@@ -241,12 +276,22 @@ public class DashboardRepository
                         )
                 ),
 
-                LocalDateTime.parse(
+                parseDateTime(
                         resultSet.getString(
                                 "created_at"
                         )
                 )
         );
+    }
+
+    private LocalDateTime parseDateTime(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+        if (text.contains(" ")) {
+            text = text.replace(" ", "T");
+        }
+        return LocalDateTime.parse(text);
     }
 
     private LowStockProduct mapLowStockProduct(

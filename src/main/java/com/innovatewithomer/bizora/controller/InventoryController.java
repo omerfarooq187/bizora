@@ -399,12 +399,10 @@ public class InventoryController {
             );
 
         } catch (Exception e) {
-
             showWarning(
-                    "Failed to open stock adjustment dialog."
+                    "Failed to open stock adjustment dialog.\n\n"
+                            + e.getMessage()
             );
-
-            e.printStackTrace();
         }
     }
 

@@ -146,7 +146,7 @@ public class PaymentService {
             );
         }
 
-        if (payment.getAmount() <= 0) {
+        if (!Double.isFinite(payment.getAmount()) || payment.getAmount() <= 0) {
             throw new IllegalArgumentException(
                     "Payment amount must be greater than zero."
             );
@@ -164,7 +164,7 @@ public class PaymentService {
             double saleTotal
     ) {
 
-        if (paidAmount <= 0) {
+        if (!Double.isFinite(paidAmount) || paidAmount <= 0) {
             return PaymentStatus.UNPAID;
         }
 
