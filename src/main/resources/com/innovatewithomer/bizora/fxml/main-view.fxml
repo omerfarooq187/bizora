@@ -107,6 +107,20 @@
 
             </Button>
 
+            <Button fx:id="purchasesButton"
+                    text="Purchases"
+                    graphicTextGap="12"
+                    styleClass="nav-button"
+                    maxWidth="Infinity"
+                    onAction="#showPurchases">
+
+                <graphic>
+                    <FontIcon iconLiteral="fas-dolly-flatbed"
+                              iconSize="18"/>
+                </graphic>
+
+            </Button>
+
             <Button fx:id="salesButton"
                     text="Sales"
                     graphicTextGap="12"

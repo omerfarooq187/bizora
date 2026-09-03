@@ -6,6 +6,8 @@ import com.innovatewithomer.bizora.model.PurchaseItem;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PurchaseItemRepository
         implements PurchaseItemRepositoryPort {
@@ -145,6 +147,22 @@ public class PurchaseItemRepository
         }
 
         return items;
+    }
+
+    @Override
+    public Map<Long, Integer> countByPurchase() {
+        String sql = "SELECT purchase_id, COUNT(*) AS item_count FROM purchase_items GROUP BY purchase_id";
+        Map<Long, Integer> counts = new HashMap<>();
+        try (Connection connection = DatabaseManager.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                counts.put(resultSet.getLong("purchase_id"), resultSet.getInt("item_count"));
+            }
+            return counts;
+        } catch (SQLException exception) {
+            throw new RuntimeException("Failed to count purchase items.", exception);
+        }
     }
 
     private PurchaseItem mapRow(

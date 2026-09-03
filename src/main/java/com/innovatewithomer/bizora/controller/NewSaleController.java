@@ -2,6 +2,7 @@ package com.innovatewithomer.bizora.controller;
 
 import com.innovatewithomer.bizora.config.AppContext;
 import com.innovatewithomer.bizora.config.AppSettingsStore;
+import com.innovatewithomer.bizora.config.AppSettings;
 import com.innovatewithomer.bizora.model.Customer;
 import com.innovatewithomer.bizora.model.Payment;
 import com.innovatewithomer.bizora.model.PaymentMethod;
@@ -11,7 +12,9 @@ import com.innovatewithomer.bizora.model.SaleItem;
 import com.innovatewithomer.bizora.service.CustomerService;
 import com.innovatewithomer.bizora.service.PaymentService;
 import com.innovatewithomer.bizora.service.SaleService;
+import com.innovatewithomer.bizora.service.ReceiptPrinterService;
 import com.innovatewithomer.bizora.util.CurrencyFormatter;
+import com.innovatewithomer.bizora.util.RefreshableView;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -29,6 +32,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ProgressIndicator;
+import javafx.concurrent.Task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -55,7 +60,7 @@ import java.util.Map;
  * Navigation between New Sale and Sales History
  * belongs to SalesController.
  */
-public class NewSaleController {
+public class NewSaleController implements RefreshableView {
 
 
     // =========================================================
@@ -70,6 +75,9 @@ public class NewSaleController {
 
     private final CustomerService customerService =
             AppContext.customerService();
+
+    private final ReceiptPrinterService receiptPrinterService =
+            new ReceiptPrinterService();
 
 
     // =========================================================
@@ -187,6 +195,12 @@ public class NewSaleController {
 
     @FXML
     private TextField paymentAmountField;
+
+    @FXML
+    private ProgressIndicator printProgressIndicator;
+
+    @FXML
+    private Label printStatusLabel;
 
 
     // =========================================================
@@ -571,12 +585,14 @@ public class NewSaleController {
         }
 
 
-        filteredProducts.setAll(
-                productList
-        );
+        handleSearch();
+    }
 
-
-        updateProductCount();
+    @Override
+    public void refreshView() {
+        loadProducts();
+        loadCustomers();
+        updateSummary();
     }
 
 
@@ -1148,6 +1164,24 @@ public class NewSaleController {
                 );
             }
 
+            AppSettings printSettings = AppSettingsStore.load();
+            boolean autoPrinting = printSettings.receiptPrintingEnabled()
+                    && printSettings.autoPrintReceipt();
+            if (autoPrinting) {
+                Map<Long, String> receiptProductNames = new HashMap<>();
+                productMap.forEach((id, product) -> receiptProductNames.put(id, product.getName()));
+                String receiptCustomer = selectedCustomer == null
+                        ? "Walk-in Customer" : selectedCustomer.getName();
+                printReceiptAsync(
+                        printSettings,
+                        savedSale,
+                        receiptProductNames,
+                        receiptCustomer,
+                        paymentAmount,
+                        paymentMethodComboBox.getValue()
+                );
+            }
+
 
             showSuccess(
                     "Sale completed successfully.\n\n"
@@ -1164,10 +1198,12 @@ public class NewSaleController {
                             + formatCurrency(
                             paymentAmount
                     )
+                            + (autoPrinting ? "\n\nReceipt is being sent to the configured printer." : "")
             );
 
 
             clearSale();
+            loadProducts();
 
 
         } catch (IllegalArgumentException e) {
@@ -1182,6 +1218,49 @@ public class NewSaleController {
                             + e.getMessage()
             );
         }
+    }
+
+    private void printReceiptAsync(
+            AppSettings settings,
+            Sale sale,
+            Map<Long, String> productNames,
+            String customerName,
+            double amountPaid,
+            PaymentMethod paymentMethod
+    ) {
+        setPrintBusy(true, "Printing receipt…");
+        Task<Void> task = new Task<>() {
+            @Override protected Void call() {
+                receiptPrinterService.printReceipt(
+                        settings, sale, productNames, customerName, amountPaid, paymentMethod);
+                return null;
+            }
+        };
+        task.setOnSucceeded(event -> setPrintBusy(false, "Receipt printed successfully."));
+        task.setOnFailed(event -> {
+            setPrintBusy(false, "Receipt printing failed.");
+            showError("Sale was saved, but its receipt could not be printed.\n\n"
+                    + rootMessage(task.getException())
+                    + "\n\nYou can retry from Sales History.");
+        });
+        Thread worker = new Thread(task, "bizora-receipt-print");
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    private void setPrintBusy(boolean busy, String message) {
+        if (printProgressIndicator != null) {
+            printProgressIndicator.setVisible(busy);
+            printProgressIndicator.setManaged(busy);
+        }
+        if (printStatusLabel != null) printStatusLabel.setText(message == null ? "" : message);
+    }
+
+    private String rootMessage(Throwable throwable) {
+        if (throwable == null) return "Unknown printer error.";
+        Throwable current = throwable;
+        while (current.getCause() != null) current = current.getCause();
+        return current.getMessage() == null ? "Unknown printer error." : current.getMessage();
     }
 
 

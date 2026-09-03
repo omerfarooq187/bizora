@@ -7,16 +7,20 @@ import java.util.Locale;
 
 public final class CurrencyFormatter {
 
+    private static final ThreadLocal<NumberFormat> NUMBER_FORMAT =
+            ThreadLocal.withInitial(() -> {
+                NumberFormat formatter = NumberFormat.getNumberInstance(Locale.US);
+                formatter.setMinimumFractionDigits(2);
+                formatter.setMaximumFractionDigits(2);
+                return formatter;
+            });
+
     private CurrencyFormatter() {
     }
 
     public static String format(double amount) {
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-        numberFormat.setMinimumFractionDigits(2);
-        numberFormat.setMaximumFractionDigits(2);
-
         String symbol = AppSettingsStore.load().currencySymbol().trim();
         String separator = symbol.length() > 1 ? " " : "";
-        return symbol + separator + numberFormat.format(amount);
+        return symbol + separator + NUMBER_FORMAT.get().format(amount);
     }
 }

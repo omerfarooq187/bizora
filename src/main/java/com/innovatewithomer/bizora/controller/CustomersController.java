@@ -3,6 +3,7 @@ package com.innovatewithomer.bizora.controller;
 import com.innovatewithomer.bizora.config.AppContext;
 import com.innovatewithomer.bizora.model.Customer;
 import com.innovatewithomer.bizora.service.CustomerService;
+import com.innovatewithomer.bizora.util.RefreshableView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 
-public class CustomersController {
+public class CustomersController implements RefreshableView {
 
     private final CustomerService customerService = AppContext.customerService();
 
@@ -97,6 +98,11 @@ public class CustomersController {
         applyFilter();
         totalCustomersLabel.setText(String.valueOf(customerList.size()));
         statusLabel.setText(customerList.size() + " customer(s) found.");
+    }
+
+    @Override
+    public void refreshView() {
+        loadCustomers();
     }
 
     private void applyFilter() {

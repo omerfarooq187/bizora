@@ -32,6 +32,9 @@ Controller
 - Payments
 - Expenses
 - Inventory movements
+- Daily local backups and guided restore
+- Date-range PDF financial reports
+- Optional 58 mm and 80 mm receipt printing
 
 ## Database
 
@@ -75,8 +78,28 @@ the operating system's Java preferences store.
 
 ## Packaging
 
-Create a trimmed runtime image with:
+Bizora is distributed as a self-contained Windows installer. Users do not need
+to install Java separately.
 
-```bash
-./mvnw clean javafx:jlink
+### Recommended Windows package
+
+Use the `.exe` installer for normal Windows 10 and Windows 11 customers. It
+provides the familiar setup wizard, optional desktop shortcut, Start Menu entry,
+per-user installation, and an embedded Java runtime.
+
+An `.msi` can be generated for businesses that specifically require managed or
+silent enterprise deployment.
+
+Windows packaging must run on Windows with JDK 21 and WiX Toolset 3 installed:
+
+```powershell
+.\packaging\windows\build-installer.ps1 -Type exe
 ```
+
+The output and its SHA-256 checksum are written to `target\installer`. The
+`Build Windows Installer` GitHub Actions workflow performs the same clean build
+on a Windows runner whenever it is manually started or a `v*` tag is pushed.
+
+For a production release, configure the signing secrets documented in
+[`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md). Do not distribute an
+unsigned installer to customers.

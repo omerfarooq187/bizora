@@ -9,7 +9,11 @@ public record AppSettings(
         String currencySymbol,
         double taxRate,
         String invoicePrefix,
-        String receiptFooter
+        String receiptFooter,
+        boolean receiptPrintingEnabled,
+        String receiptPrinterName,
+        String receiptPaperWidth,
+        boolean autoPrintReceipt
 ) {
     public static AppSettings defaults() {
         return new AppSettings(
@@ -21,7 +25,11 @@ public record AppSettings(
                 "$",
                 0.0,
                 "INV-",
-                "Thank you for your business!"
+                "Thank you for your business!",
+                false,
+                "",
+                "80 mm",
+                true
         );
     }
 }

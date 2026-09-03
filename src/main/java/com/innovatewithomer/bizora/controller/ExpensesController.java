@@ -4,6 +4,7 @@ import com.innovatewithomer.bizora.config.AppContext;
 import com.innovatewithomer.bizora.model.Expense;
 import com.innovatewithomer.bizora.service.ExpenseService;
 import com.innovatewithomer.bizora.util.CurrencyFormatter;
+import com.innovatewithomer.bizora.util.RefreshableView;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -24,7 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-public class ExpensesController {
+public class ExpensesController implements RefreshableView {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 
@@ -131,6 +132,11 @@ public class ExpensesController {
 
         applyFilter();
         updateSummary();
+    }
+
+    @Override
+    public void refreshView() {
+        loadExpenses();
     }
 
     private void applyFilter() {

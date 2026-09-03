@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.innovatewithomer.bizora.controller.PurchasesController"
+            styleClass="content-root">
+    <top>
+        <VBox spacing="4">
+            <padding><Insets bottom="18"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <VBox HBox.hgrow="ALWAYS" spacing="3">
+                    <Label text="Purchases &amp; Stock Receiving" styleClass="page-title"/>
+                    <Label text="Record supplier invoices and add received goods directly to inventory."
+                           styleClass="page-subtitle" wrapText="true"/>
+                </VBox>
+                <Button text="Receive Stock" styleClass="primary-button" onAction="#handleReceiveStock">
+                    <graphic><FontIcon iconLiteral="fas-dolly-flatbed" iconSize="14"/></graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="14">
+            <HBox spacing="14">
+                <VBox styleClass="stat-chip" HBox.hgrow="ALWAYS">
+                    <Label fx:id="totalPurchasesLabel" text="Rs0.00" styleClass="stat-chip-value"/>
+                    <Label text="Purchase Value" styleClass="stat-chip-label"/>
+                </VBox>
+                <VBox styleClass="stat-chip" HBox.hgrow="ALWAYS">
+                    <Label fx:id="purchaseCountLabel" text="0" styleClass="stat-chip-value"/>
+                    <Label text="Purchase Invoices" styleClass="stat-chip-label"/>
+                </VBox>
+                <VBox styleClass="stat-chip" HBox.hgrow="ALWAYS">
+                    <Label fx:id="unpaidCountLabel" text="0" styleClass="stat-chip-value warning-value"/>
+                    <Label text="Unpaid Purchases" styleClass="stat-chip-label"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search invoice or supplier…"
+                           styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="paymentFilter" prefWidth="165"/>
+            </HBox>
+
+            <VBox styleClass="table-card" VBox.vgrow="ALWAYS">
+                <TableView fx:id="purchasesTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="invoiceColumn" text="Invoice" prefWidth="150"/>
+                        <TableColumn fx:id="dateColumn" text="Received" prefWidth="165"/>
+                        <TableColumn fx:id="supplierColumn" text="Supplier" prefWidth="210"/>
+                        <TableColumn fx:id="itemsColumn" text="Items" prefWidth="90"/>
+                        <TableColumn fx:id="totalColumn" text="Total" prefWidth="140" style="-fx-alignment:CENTER_RIGHT;"/>
+                        <TableColumn fx:id="paymentColumn" text="Payment" prefWidth="110" style="-fx-alignment:CENTER;"/>
+                    </columns>
+                    <placeholder>
+                        <VBox alignment="CENTER" spacing="10">
+                            <FontIcon iconLiteral="fas-box-open" iconSize="36" style="-fx-icon-color:#d1d5db;"/>
+                            <Label text="No purchases recorded yet." style="-fx-text-fill:#9ca3af; -fx-font-size:14px;"/>
+                            <Label text="Receive stock to create the first supplier purchase." style="-fx-text-fill:#9ca3af; -fx-font-size:12px;"/>
+                        </VBox>
+                    </placeholder>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" styleClass="table-footer">
+            <padding><Insets top="10"/></padding>
+            <Label fx:id="statusLabel" styleClass="secondary-text"/>
+        </HBox>
+    </bottom>
+</BorderPane>

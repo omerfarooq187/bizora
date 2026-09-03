@@ -1,0 +1,8 @@
+Bizora 1.0.0
+
+Copyright © 2026 InnovateWithOmer. All rights reserved.
+https://innovatewithomer.dev
+
+Bizora includes third-party open-source components. Their licenses remain the
+property of their respective authors and are available from the component
+projects and Maven dependency metadata.

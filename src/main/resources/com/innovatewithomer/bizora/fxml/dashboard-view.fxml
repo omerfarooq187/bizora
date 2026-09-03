@@ -379,6 +379,19 @@
 
                     </Button>
 
+                    <Button text="Receive Stock"
+                            styleClass="secondary-button"
+                            onAction="#handleReceiveStock">
+
+                        <graphic>
+
+                            <FontIcon iconLiteral="fas-dolly-flatbed"
+                                      iconSize="14"/>
+
+                        </graphic>
+
+                    </Button>
+
                     <Button text="Add Expense"
                             styleClass="secondary-button"
                             onAction="#handleAddExpense">

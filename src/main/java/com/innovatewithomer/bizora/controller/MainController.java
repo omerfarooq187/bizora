@@ -42,6 +42,9 @@ public class MainController {
     private Button inventoryButton;
 
     @FXML
+    private Button purchasesButton;
+
+    @FXML
     private Button salesButton;
 
     @FXML
@@ -144,7 +147,7 @@ public class MainController {
             rootPane.getStyleClass().add(compact ? "app-compact" : "app-wide");
         }
 
-        boolean showFooter = !compact && rootPane.getHeight() >= 720;
+        boolean showFooter = !compact && rootPane.getHeight() >= 800;
         if (footerMode == null || footerMode != showFooter) {
             footerMode = showFooter;
             developerFooter.setVisible(showFooter);
@@ -179,6 +182,14 @@ public class MainController {
         setActiveButton(inventoryButton);
 
         viewManager.show("inventory-view.fxml");
+    }
+
+    @FXML
+    public void showPurchases() {
+
+        setActiveButton(purchasesButton);
+
+        viewManager.show("purchases-view.fxml");
     }
 
     @FXML
@@ -257,6 +268,7 @@ public class MainController {
                 dashboardButton,
                 productsButton,
                 inventoryButton,
+                purchasesButton,
                 salesButton,
                 customersButton,
                 suppliersButton,

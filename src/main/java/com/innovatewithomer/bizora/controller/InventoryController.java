@@ -4,6 +4,7 @@ import com.innovatewithomer.bizora.config.AppContext;
 import com.innovatewithomer.bizora.model.InventoryMovement;
 import com.innovatewithomer.bizora.model.Product;
 import com.innovatewithomer.bizora.service.InventoryService;
+import com.innovatewithomer.bizora.util.RefreshableView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +27,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class InventoryController {
+public class InventoryController implements RefreshableView {
 
     private final InventoryService inventoryService =
             AppContext.inventoryService();
@@ -330,6 +331,11 @@ public class InventoryController {
         selectProductById(
                 selectedProductId
         );
+    }
+
+    @Override
+    public void refreshView() {
+        handleRefresh();
     }
 
 

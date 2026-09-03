@@ -6,6 +6,7 @@ import com.innovatewithomer.bizora.model.dashboard.LowStockProduct;
 import com.innovatewithomer.bizora.model.dashboard.RecentSale;
 import com.innovatewithomer.bizora.service.DashboardService;
 import com.innovatewithomer.bizora.util.CurrencyFormatter;
+import com.innovatewithomer.bizora.util.RefreshableView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,7 +26,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class DashboardController {
+public class DashboardController implements RefreshableView {
 
     private final DashboardService dashboardService =
             AppContext.dashboardService();
@@ -252,6 +253,11 @@ public class DashboardController {
         }
     }
 
+    @Override
+    public void refreshView() {
+        loadDashboard();
+    }
+
 
     private void loadSummary() {
 
@@ -396,6 +402,14 @@ public class DashboardController {
 
         if (MainController.getInstance() != null) {
             MainController.getInstance().showInventory();
+        }
+    }
+
+    @FXML
+    private void handleReceiveStock() {
+
+        if (MainController.getInstance() != null) {
+            MainController.getInstance().showPurchases();
         }
     }
 

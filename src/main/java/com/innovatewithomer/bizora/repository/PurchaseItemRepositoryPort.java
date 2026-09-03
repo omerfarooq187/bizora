@@ -5,6 +5,7 @@ import com.innovatewithomer.bizora.model.PurchaseItem;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public interface PurchaseItemRepositoryPort {
 
@@ -21,4 +22,6 @@ public interface PurchaseItemRepositoryPort {
             Connection connection,
             Long purchaseId
     ) throws SQLException;
+
+    Map<Long, Integer> countByPurchase();
 }

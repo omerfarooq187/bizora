@@ -149,14 +149,22 @@ public class PurchaseService {
                         product.getStockQuantity()
                                 + item.getQuantity();
 
-                productRepository.updateStock(
-                        connection,
-                        product.getId(),
+                product.setStockQuantity(
                         newStock
                 );
 
-                product.setStockQuantity(
-                        newStock
+                /*
+                 * Keep the product's last purchase cost current. This makes
+                 * future margins and cost-of-goods reports meaningful after
+                 * stock is received through the purchase workflow.
+                 */
+                product.setPurchasePrice(
+                        item.getSubtotal() / item.getQuantity()
+                );
+
+                productRepository.update(
+                        connection,
+                        product
                 );
 
                 InventoryMovement movement =
@@ -207,6 +215,10 @@ public class PurchaseService {
     public List<Purchase> getAllPurchases() {
 
         return purchaseRepository.findAll();
+    }
+
+    public Map<Long, Integer> getPurchaseItemCounts() {
+        return purchaseItemRepository.countByPurchase();
     }
 
     private void validatePurchase(

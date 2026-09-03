@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -174,10 +175,19 @@
                         left="0"/>
             </padding>
 
+            <ProgressIndicator fx:id="receiptProgressIndicator" prefWidth="24" prefHeight="24"
+                               visible="false" managed="false"/>
+            <Label fx:id="receiptStatusLabel" text="" styleClass="secondary-text" HBox.hgrow="ALWAYS"/>
+
             <Button
                     text="Cancel Sale"
                     onAction="#handleCancelSale"
                     styleClass="danger-button"/>
+
+            <Button
+                    text="Print Receipt"
+                    onAction="#handlePrintReceipt"
+                    styleClass="secondary-button"/>
 
             <Button
                     text="View Details"

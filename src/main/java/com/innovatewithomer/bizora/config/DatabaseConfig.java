@@ -20,11 +20,16 @@ public final class DatabaseConfig {
         if (os.contains("win")) {
 
             String appData = System.getenv("APPDATA");
-
-            dataDirectory = Paths.get(
-                    appData,
-                    APP_NAME
-            );
+            if (appData == null || appData.isBlank()) {
+                dataDirectory = Paths.get(
+                        System.getProperty("user.home"),
+                        "AppData",
+                        "Roaming",
+                        APP_NAME
+                );
+            } else {
+                dataDirectory = Paths.get(appData, APP_NAME);
+            }
 
         } else {
 
@@ -43,19 +48,10 @@ public final class DatabaseConfig {
             Files.createDirectories(dataDirectory);
 
         } catch (Exception e) {
-
-            try {
-                dataDirectory = Paths.get(
-                        System.getProperty("java.io.tmpdir"),
-                        APP_NAME
-                );
-                Files.createDirectories(dataDirectory);
-            } catch (Exception ex) {
-                throw new RuntimeException(
-                        "Unable to create Bizora data directory.",
-                        ex
-                );
-            }
+            throw new RuntimeException(
+                    "Unable to create Bizora data directory at " + dataDirectory + ".",
+                    e
+            );
         }
 
         return dataDirectory;
@@ -63,9 +59,11 @@ public final class DatabaseConfig {
 
     public static String getJdbcUrl() {
 
-        Path databasePath =
-                getDataDirectory().resolve("bizora.db");
+        return "jdbc:sqlite:" + getDatabasePath();
+    }
 
-        return "jdbc:sqlite:" + databasePath;
+    public static Path getDatabasePath() {
+
+        return getDataDirectory().resolve("bizora.db");
     }
 }

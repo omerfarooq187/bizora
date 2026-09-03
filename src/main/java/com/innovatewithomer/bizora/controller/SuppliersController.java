@@ -3,6 +3,7 @@ package com.innovatewithomer.bizora.controller;
 import com.innovatewithomer.bizora.config.AppContext;
 import com.innovatewithomer.bizora.model.Supplier;
 import com.innovatewithomer.bizora.service.SupplierService;
+import com.innovatewithomer.bizora.util.RefreshableView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 
-public class SuppliersController {
+public class SuppliersController implements RefreshableView {
 
     private final SupplierService supplierService = AppContext.supplierService();
 
@@ -95,6 +96,11 @@ public class SuppliersController {
 
         applyFilter();
         statusLabel.setText(supplierList.size() + " supplier(s) found.");
+    }
+
+    @Override
+    public void refreshView() {
+        loadSuppliers();
     }
 
     private void applyFilter() {

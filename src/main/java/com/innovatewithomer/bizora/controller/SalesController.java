@@ -6,9 +6,12 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import com.innovatewithomer.bizora.util.RefreshableView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -22,7 +25,10 @@ import java.net.URL;
  * The actual POS logic is handled by NewSaleController.
  * Sales history logic is handled by SalesHistoryController.
  */
-public class SalesController {
+public class SalesController implements RefreshableView {
+
+    private final Map<String, LoadedView> viewCache = new HashMap<>();
+    private String currentResource;
 
 
     // =========================================================
@@ -134,14 +140,15 @@ public class SalesController {
             }
 
 
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            location
-                    );
-
-
-            Node view =
-                    loader.load();
+            LoadedView loaded = viewCache.get(resource);
+            if (loaded == null) {
+                FXMLLoader loader = new FXMLLoader(location);
+                Node view = loader.load();
+                loaded = new LoadedView(view, loader.getController());
+                viewCache.put(resource, loaded);
+            } else if (loaded.controller() instanceof RefreshableView refreshable) {
+                refreshable.refreshView();
+            }
 
 
             /*
@@ -150,7 +157,9 @@ public class SalesController {
              */
             salesContentArea
                     .getChildren()
-                    .setAll(view);
+                    .setAll(loaded.view());
+
+            currentResource = resource;
 
 
         } catch (IOException e) {
@@ -160,6 +169,17 @@ public class SalesController {
             );
         }
     }
+
+    @Override
+    public void refreshView() {
+        if (currentResource == null) return;
+        LoadedView loaded = viewCache.get(currentResource);
+        if (loaded != null && loaded.controller() instanceof RefreshableView refreshable) {
+            refreshable.refreshView();
+        }
+    }
+
+    private record LoadedView(Node view, Object controller) { }
 
 
     // =========================================================

@@ -5,6 +5,9 @@ module com.innovatewithomer.bizora {
     requires org.controlsfx.controls;
     requires org.xerial.sqlitejdbc;
     requires java.prefs;
+    requires java.desktop;
+    requires java.logging;
+    requires com.github.librepdf.openpdf;
 
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.fontawesome5;

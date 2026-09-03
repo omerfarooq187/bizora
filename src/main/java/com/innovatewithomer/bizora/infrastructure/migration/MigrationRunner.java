@@ -1,6 +1,7 @@
 package com.innovatewithomer.bizora.infrastructure.migration;
 
 import com.innovatewithomer.bizora.infrastructure.DatabaseMigration;
+import com.innovatewithomer.bizora.util.AppLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +21,9 @@ public class MigrationRunner {
             new V6__AddSupplierToPurchases(),
             new V7__CreatePayments(),
             new V8__CreateExpensesTable(),
-            new V9__AddCostPriceToSaleItems()
+            new V9__AddCostPriceToSaleItems(),
+            new V10__AddPerformanceIndexes(),
+            new V11__OptimizeReportQueries()
     );
 
     public void run(Connection connection) throws SQLException {
@@ -53,7 +56,7 @@ public class MigrationRunner {
                 connection.commit();
             }
 
-            System.out.println(
+            AppLogger.info(
                     "Migration V" + migration.version()
                             + " applied: " + migration.description()
             );

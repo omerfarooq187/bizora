@@ -18,8 +18,12 @@
                     <Label text="Reports" styleClass="page-title"/>
                     <Label text="Analyze your business performance over any date range." styleClass="page-subtitle"/>
                 </VBox>
-                <Button fx:id="generateReportButton" text="Generate Report" styleClass="primary-button"
-                        onAction="#handleGenerateReport" defaultButton="true"/>
+                <ProgressIndicator fx:id="reportProgressIndicator" prefWidth="26" prefHeight="26"
+                                   visible="false" managed="false"/>
+                <Button fx:id="generateReportButton" text="Export PDF" styleClass="primary-button"
+                        onAction="#handleExportPdf">
+                    <graphic><FontIcon iconLiteral="fas-file-pdf" iconSize="13"/></graphic>
+                </Button>
             </HBox>
         </VBox>
     </top>
@@ -43,7 +47,9 @@
                         <DatePicker fx:id="toDate" prefWidth="160"/>
                     </VBox>
                     <Button fx:id="generateButton" text="Generate" styleClass="primary-button" onAction="#handleGenerateReport"
-                            style="-fx-padding:10px 20px;"/>
+                            style="-fx-padding:10px 20px;" defaultButton="true"/>
+                    <Button text="Today" styleClass="secondary-button" onAction="#handleToday"/>
+                    <Button text="This Week" styleClass="secondary-button" onAction="#handleThisWeek"/>
                     <Button text="This Month" styleClass="secondary-button" onAction="#handleThisMonth"/>
                     <Button text="Last 30 Days" styleClass="secondary-button" onAction="#handleLast30Days"/>
                     <Button text="This Year" styleClass="secondary-button" onAction="#handleThisYear"/>

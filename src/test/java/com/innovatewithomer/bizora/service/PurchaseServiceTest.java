@@ -199,6 +199,21 @@ class PurchaseServiceTest {
     }
 
     @Test
+    void shouldUpdateLastPurchaseCostAfterReceivingStock() {
+        Product product = productRepository.save(
+                new Product("Tea", "TEA-001", 600, 400, 8));
+        Purchase purchase = new Purchase("PUR-COST-001");
+        purchase.addItem(new PurchaseItem(product.getId(), 10, 500, 200));
+
+        purchaseService.createPurchase(purchase);
+
+        Product updated = productRepository.findById(product.getId());
+        assertNotNull(updated);
+        assertEquals(18, updated.getStockQuantity());
+        assertEquals(480, updated.getPurchasePrice());
+    }
+
+    @Test
     void shouldCreatePurchaseItem() {
 
         Product product =

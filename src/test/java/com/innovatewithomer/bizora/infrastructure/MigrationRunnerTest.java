@@ -20,7 +20,7 @@ class MigrationRunnerTest {
             try (var statement = connection.createStatement();
                  var result = statement.executeQuery("SELECT COUNT(*) FROM schema_version")) {
                 assertTrue(result.next());
-                assertEquals(9, result.getInt(1));
+                assertEquals(11, result.getInt(1));
             }
 
             boolean hasCostPrice = false;
@@ -33,6 +33,17 @@ class MigrationRunnerTest {
                 }
             }
             assertTrue(hasCostPrice);
+
+            boolean hasSalesIndex = false;
+            try (var statement = connection.createStatement();
+                 var indexes = statement.executeQuery("PRAGMA index_list(sales)")) {
+                while (indexes.next()) {
+                    if ("idx_sales_status_date".equals(indexes.getString("name"))) {
+                        hasSalesIndex = true;
+                    }
+                }
+            }
+            assertTrue(hasSalesIndex);
         }
     }
 }

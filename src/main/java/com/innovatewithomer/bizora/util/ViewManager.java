@@ -7,6 +7,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ViewManager {
 
@@ -14,6 +16,7 @@ public class ViewManager {
             "/com/innovatewithomer/bizora/fxml/";
 
     private final Pane contentArea;
+    private final Map<String, LoadedView> viewCache = new HashMap<>();
 
     public ViewManager(Pane contentArea) {
         this.contentArea = contentArea;
@@ -22,15 +25,20 @@ public class ViewManager {
     public void show(String viewName) {
 
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(FXML_PATH + viewName)
-            );
+            LoadedView loaded = viewCache.get(viewName);
+            if (loaded == null) {
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource(FXML_PATH + viewName)
+                );
+                Node view = loader.load();
+                configureResponsiveTables(view);
+                loaded = new LoadedView(view, loader.getController());
+                viewCache.put(viewName, loaded);
+            } else if (loaded.controller() instanceof RefreshableView refreshable) {
+                refreshable.refreshView();
+            }
 
-            Node view = loader.load();
-
-            configureResponsiveTables(view);
-
-            contentArea.getChildren().setAll(view);
+            contentArea.getChildren().setAll(loaded.view());
 
         } catch (IOException | NullPointerException e) {
             throw new RuntimeException(
@@ -38,6 +46,8 @@ public class ViewManager {
             );
         }
     }
+
+    private record LoadedView(Node view, Object controller) { }
 
     private void configureResponsiveTables(Node node) {
         if (node instanceof TableView<?> tableView) {

@@ -22,8 +22,8 @@ public class FinancialSummaryRepository
                     COALESCE(SUM(total), 0)
                 FROM sales
                 WHERE sale_status = 'COMPLETED'
-                  AND DATE(created_at)
-                    BETWEEN ? AND ?
+                  AND created_at >= ?
+                  AND created_at < ?
                 """;
 
         String costOfGoodsSoldSql = """
@@ -32,8 +32,8 @@ public class FinancialSummaryRepository
                 FROM sale_items item
                 JOIN sales sale ON sale.id = item.sale_id
                 WHERE sale.sale_status = 'COMPLETED'
-                  AND DATE(sale.created_at)
-                    BETWEEN ? AND ?
+                  AND sale.created_at >= ?
+                  AND sale.created_at < ?
                 """;
 
         String expensesSql = """
@@ -53,24 +53,24 @@ public class FinancialSummaryRepository
                     getTotal(
                             connection,
                             salesSql,
-                            from,
-                            to
+                            from.atStartOfDay().toString(),
+                            to.plusDays(1).atStartOfDay().toString()
                     );
 
             double totalCostOfGoodsSold =
                     getTotal(
                             connection,
                             costOfGoodsSoldSql,
-                            from,
-                            to
+                            from.atStartOfDay().toString(),
+                            to.plusDays(1).atStartOfDay().toString()
                     );
 
             double totalExpenses =
                     getTotal(
                             connection,
                             expensesSql,
-                            from,
-                            to
+                            from.toString(),
+                            to.toString()
                     );
 
             return new FinancialSummary(
@@ -93,8 +93,8 @@ public class FinancialSummaryRepository
     private double getTotal(
             Connection connection,
             String sql,
-            LocalDate from,
-            LocalDate to
+            String from,
+            String to
     ) throws Exception {
 
         try (
@@ -104,12 +104,12 @@ public class FinancialSummaryRepository
 
             statement.setString(
                     1,
-                    from.toString()
+                    from
             );
 
             statement.setString(
                     2,
-                    to.toString()
+                    to
             );
 
             try (

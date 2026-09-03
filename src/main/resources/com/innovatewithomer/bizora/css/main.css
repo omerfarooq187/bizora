@@ -1632,3 +1632,47 @@
     -fx-font-weight: bold;
     -fx-text-fill: #3d4250;
 }
+
+.status-paid {
+    -fx-text-fill: #059669;
+    -fx-font-weight: bold;
+}
+
+.status-unpaid,
+.warning-value {
+    -fx-text-fill: #d97706;
+    -fx-font-weight: bold;
+}
+
+.purchase-total-box {
+    -fx-background-color: #f7f6ff;
+    -fx-background-radius: 10;
+    -fx-border-color: #e4e1ff;
+    -fx-border-radius: 10;
+    -fx-padding: 10 14;
+}
+
+.purchase-total-value {
+    -fx-font-size: 17px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #5147e5;
+}
+
+.printer-card {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #fbfaff);
+    -fx-border-color: #e7e2f8;
+}
+
+.printer-validation-note {
+    -fx-background-color: #fff8e8;
+    -fx-background-radius: 9;
+    -fx-border-color: #f5dfaa;
+    -fx-border-radius: 9;
+    -fx-padding: 9 11;
+    -fx-font-size: 11px;
+    -fx-text-fill: #8a5a08;
+}
+
+.progress-indicator {
+    -fx-progress-color: #5d53eb;
+}

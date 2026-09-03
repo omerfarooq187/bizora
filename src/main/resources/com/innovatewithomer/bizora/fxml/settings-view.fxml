@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
@@ -108,11 +107,101 @@
                     </GridPane>
                 </VBox>
 
+                <!-- Optional POS receipt printing -->
+                <VBox styleClass="card printer-card" spacing="16">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <FontIcon iconLiteral="fas-print" iconSize="16" style="-fx-icon-color:#7c3aed;"/>
+                        <VBox spacing="2" HBox.hgrow="ALWAYS">
+                            <Label text="POS Receipt Printer" styleClass="section-title"/>
+                            <Label text="Optional thermal receipt printing through printers installed on this computer."
+                                   styleClass="section-subtitle" wrapText="true"/>
+                        </VBox>
+                        <CheckBox fx:id="receiptPrintingEnabledCheck" text="Enable printing"/>
+                    </HBox>
+                    <Separator/>
+
+                    <VBox fx:id="printerSettingsBox" spacing="14">
+                        <GridPane hgap="20" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints prefWidth="180" minWidth="140"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Label text="Installed Printer *" styleClass="form-label"/>
+                            <HBox spacing="8" GridPane.columnIndex="1">
+                                <ComboBox fx:id="receiptPrinterCombo" promptText="Select printer"
+                                          maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                                <Button text="Refresh" styleClass="secondary-button" onAction="#handleRefreshPrinters"/>
+                            </HBox>
+
+                            <Label text="Paper Width *" styleClass="form-label" GridPane.rowIndex="1"/>
+                            <ComboBox fx:id="receiptPaperWidthCombo" prefWidth="150"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                            <Label text="After Every Sale" styleClass="form-label" GridPane.rowIndex="2"/>
+                            <CheckBox fx:id="autoPrintReceiptCheck" text="Automatically print receipt"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        </GridPane>
+
+                        <FlowPane hgap="10" vgap="8" alignment="CENTER_LEFT">
+                            <Button text="Print Test Receipt" styleClass="secondary-button" onAction="#handleTestReceipt">
+                                <graphic><FontIcon iconLiteral="fas-print" iconSize="12"/></graphic>
+                            </Button>
+                            <ProgressIndicator fx:id="printerProgressIndicator" prefWidth="24" prefHeight="24"
+                                               visible="false" managed="false"/>
+                            <Label text="Supports standard 58 mm and 80 mm POS thermal printers. Configure the paper size in the printer driver too."
+                                   styleClass="secondary-text" wrapText="true"/>
+                        </FlowPane>
+                    </VBox>
+
+                    <Label text="Printing requires a business name and phone number. Email is optional."
+                           styleClass="printer-validation-note" wrapText="true"/>
+                </VBox>
+
+                <!-- Offline data safety -->
+                <VBox styleClass="card" spacing="16">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <FontIcon iconLiteral="fas-shield-alt" iconSize="16" style="-fx-icon-color:#0ea5e9;"/>
+                        <VBox spacing="2">
+                            <Label text="Backup &amp; Recovery" styleClass="section-title"/>
+                            <Label text="Protect your products, stock, sales, expenses, and customer records without internet."
+                                   styleClass="section-subtitle" wrapText="true"/>
+                        </VBox>
+                    </HBox>
+                    <Separator/>
+                    <GridPane hgap="20" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="180" minWidth="140"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+                        <Label text="Latest backup" styleClass="form-label"/>
+                        <Label fx:id="lastBackupLabel" text="No backup created yet" styleClass="secondary-text"
+                               wrapText="true" GridPane.columnIndex="1"/>
+                        <Label text="Backup folder" styleClass="form-label" GridPane.rowIndex="1"/>
+                        <Label fx:id="backupFolderLabel" styleClass="secondary-text" wrapText="true"
+                               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    </GridPane>
+                    <FlowPane hgap="10" vgap="10" alignment="CENTER_LEFT">
+                        <Button fx:id="createBackupButton" text="Create Backup" styleClass="primary-button" onAction="#handleCreateBackup">
+                            <graphic><FontIcon iconLiteral="fas-download" iconSize="12"/></graphic>
+                        </Button>
+                        <Button fx:id="restoreBackupButton" text="Restore Backup" styleClass="secondary-button" onAction="#handleRestoreBackup">
+                            <graphic><FontIcon iconLiteral="fas-history" iconSize="12"/></graphic>
+                        </Button>
+                        <Button fx:id="openBackupFolderButton" text="Open Backup Folder" styleClass="secondary-button" onAction="#handleOpenBackupFolder">
+                            <graphic><FontIcon iconLiteral="fas-folder-open" iconSize="12"/></graphic>
+                        </Button>
+                        <ProgressIndicator fx:id="backupProgressIndicator" prefWidth="24" prefHeight="24"
+                                           visible="false" managed="false"/>
+                    </FlowPane>
+                    <Label text="Bizora also creates one automatic local backup per day and keeps the latest 14 copies."
+                           styleClass="secondary-text" wrapText="true"/>
+                </VBox>
+
                 <!-- About & developer attribution -->
                 <HBox styleClass="card about-card" spacing="20" alignment="CENTER_LEFT">
-                    <ImageView fitWidth="108" fitHeight="108" preserveRatio="true" smooth="true">
-                        <image><Image url="@../images/bizora_logo.png"/></image>
-                    </ImageView>
+                    <ImageView fx:id="aboutLogoImage" fitWidth="108" fitHeight="108"
+                               preserveRatio="true" smooth="true"/>
                     <VBox spacing="6" HBox.hgrow="ALWAYS">
                         <Label text="Bizora" styleClass="about-title"/>
                         <Label text="Business management made clear, fast, and practical."

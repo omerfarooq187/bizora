@@ -1,35 +1,99 @@
+# Maven, Java and packaged application output
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
+build/
+out/
+dist/
+release/
+installer/
+runtime/
+app-image/
+*.class
+*.exe
+*.msi
+*.msix
+*.appx
+*.deb
+*.rpm
+hs_err_pid*
+replay_pid*
 
-### IntelliJ IDEA ###
+# Generated reports and local exports
+/output/
+/exports/
+*.tmp
+*.temp
+*.bak
+
+# Local Bizora databases, backups and runtime locks
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.sqlite
+*.sqlite3
+backups/
+logs/
+bizora.lock
+
+# Signing certificates, private keys and secrets
+*.pfx
+*.p12
+*.pem
+*.key
+*.jks
+*.keystore
+.env
+.env.*
+!.env.example
+secrets/
+
+# Maven release metadata
+pom.xml.releaseBackup
+release.properties
+dependency-reduced-pom.xml
+
+# Maven wrapper JAR must remain versioned
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
 .idea/
 *.iws
 *.iml
 *.ipr
 
-### Eclipse ###
-.apt_generated
+# Eclipse
+.apt_generated/
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
-.sts4-cache
+.sts4-cache/
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
-/dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
+# VS Code and build-tool caches
+.vscode/
+.gradle/
+.kotlin/
+.openjfx/
+.cache/
 
-### Mac OS ###
-.DS_Store
+# AI/editor local state
 .aider*
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.directory
+
+# Editor swap and backup files
+*.swp
+*.swo
+*~

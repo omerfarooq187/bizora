@@ -3,6 +3,7 @@ package com.innovatewithomer.bizora.controller;
 import com.innovatewithomer.bizora.config.AppContext;
 import com.innovatewithomer.bizora.model.Product;
 import com.innovatewithomer.bizora.service.ProductService;
+import com.innovatewithomer.bizora.util.RefreshableView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ProductController {
+public class ProductController implements RefreshableView {
 
     private final ProductService productService = AppContext.productService();
 
@@ -179,6 +180,11 @@ public class ProductController {
         }
 
         applySearchFilter();
+    }
+
+    @Override
+    public void refreshView() {
+        loadProducts();
     }
 
     private void applySearchFilter() {
