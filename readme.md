@@ -10,7 +10,7 @@ Download the newest installers from the
 | Platform | Download | Requirements |
 |---|---|---|
 | Windows | `Bizora-1.0.1.exe` | 64-bit Windows 10 or 11 |
-| Ubuntu / Debian | `bizora_1.0.1-1_amd64.deb` | 64-bit Linux |
+| Ubuntu / Debian | `bizora_1.0.1_amd64.deb` | 64-bit Linux |
 | Fedora / RHEL | `bizora-1.0.1-1.x86_64.rpm` | 64-bit Linux |
 
 Java is bundled inside every installer. Windows may display an “Unknown
@@ -24,7 +24,7 @@ wizard can create Start Menu and desktop shortcuts.
 ### Install on Ubuntu or Debian
 
 ```bash
-sudo apt install ./bizora_1.0.1-1_amd64.deb
+sudo apt install ./bizora_1.0.1_amd64.deb
 ```
 
 ### Install on Fedora or RHEL
