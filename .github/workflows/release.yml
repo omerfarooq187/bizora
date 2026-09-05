@@ -132,12 +132,13 @@ jobs:
       - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" release-assets/* --clobber
           else
             gh release create "$RELEASE_TAG" release-assets/* \
-              --target "$GITHUB_SHA" \
+              --verify-tag \
               --title "Bizora ${RELEASE_TAG#v}" \
               --generate-notes \
               --notes "Self-contained installers for Windows 10/11, Ubuntu/Debian, and Fedora/RHEL. The Windows installer is unsigned unless the release workflow has signing secrets configured."
