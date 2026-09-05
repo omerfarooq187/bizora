@@ -2,6 +2,37 @@
 
 Bizora is an offline-first business management application designed for small businesses and shopkeepers.
 
+## Download
+
+Download the newest installers from the
+**[Bizora Releases page](https://github.com/omerfarooq187/bizora/releases/latest)**.
+
+| Platform | Download | Requirements |
+|---|---|---|
+| Windows | `Bizora-1.0.0.exe` | 64-bit Windows 10 or 11 |
+| Ubuntu / Debian | `bizora_1.0.0-1_amd64.deb` | 64-bit Linux |
+| Fedora / RHEL | `bizora-1.0.0-1.x86_64.rpm` | 64-bit Linux |
+
+Java is bundled inside every installer. Windows may display an “Unknown
+publisher” warning until the Windows release is code-signed.
+
+### Install on Windows
+
+Download `Bizora-1.0.0.exe`, copy it by USB if needed, and run it. The setup
+wizard can create Start Menu and desktop shortcuts.
+
+### Install on Ubuntu or Debian
+
+```bash
+sudo apt install ./bizora_1.0.0-1_amd64.deb
+```
+
+### Install on Fedora or RHEL
+
+```bash
+sudo dnf install ./bizora-1.0.0-1.x86_64.rpm
+```
+
 ## Tech Stack
 
 - Java 21
@@ -76,10 +107,9 @@ directory:
 Business identity, currency, tax, and receipt preferences are persisted using
 the operating system's Java preferences store.
 
-## Packaging
+## Building installers
 
-Bizora is distributed as a self-contained Windows installer. Users do not need
-to install Java separately.
+Bizora installers are self-contained. Users do not need to install Java separately.
 
 ### Recommended Windows package
 
@@ -98,8 +128,18 @@ Windows packaging must run on Windows with JDK 21 and WiX Toolset 3 installed:
 
 The output and its SHA-256 checksum are written to `target\installer`. The
 `Build Windows Installer` GitHub Actions workflow performs the same clean build
-on a Windows runner whenever it is manually started or a `v*` tag is pushed.
+on a Windows runner when manually started.
+
+Build Linux `.deb` and `.rpm` installers on Linux with:
+
+```bash
+./packaging/linux/build-installers.sh
+```
+
+The `Publish Release` workflow builds all three formats and attaches them to a
+GitHub Release when a matching version tag such as `v1.0.0` is pushed.
 
 For a production release, configure the signing secrets documented in
-[`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md). Do not distribute an
-unsigned installer to customers.
+[`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md). Unsigned Windows
+installers remain usable, but should be signed before broad commercial
+distribution to avoid SmartScreen warnings.

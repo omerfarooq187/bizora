@@ -2,9 +2,6 @@ name: Build Windows Installer
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "v*"
 
 permissions:
   contents: read
@@ -49,7 +46,11 @@ jobs:
           $certificate = Join-Path $env:RUNNER_TEMP "bizora-signing.pfx"
           [IO.File]::WriteAllBytes($certificate, [Convert]::FromBase64String($env:SIGNING_CERTIFICATE_BASE64))
           $installer = Get-ChildItem target\installer\*.exe | Select-Object -First 1
-          signtool sign /fd SHA256 /f $certificate /p $env:SIGNING_CERTIFICATE_PASSWORD `
+          $signTool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" |
+            Sort-Object FullName -Descending |
+            Select-Object -First 1
+          if (-not $signTool) { throw "SignTool was not found." }
+          & $signTool.FullName sign /fd SHA256 /f $certificate /p $env:SIGNING_CERTIFICATE_PASSWORD `
             /tr http://timestamp.digicert.com /td SHA256 $installer.FullName
           Remove-Item $certificate -Force
           $hash = Get-FileHash $installer.FullName -Algorithm SHA256
