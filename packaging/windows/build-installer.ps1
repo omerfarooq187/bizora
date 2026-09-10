@@ -65,9 +65,14 @@ if ($Type -eq "msix") {
     & $Jpackage @Arguments
     if ($LASTEXITCODE -ne 0) { throw "jpackage failed to create the app-image." }
 
+    $AppRoot = Join-Path $AppImageDir "Bizora"
+    if (-not (Test-Path $AppRoot)) {
+        $AppRoot = $AppImageDir
+    }
+
     # Step B: inject AppxManifest.xml
     $ManifestTemplate = Join-Path $ProjectRoot "packaging\windows\appxmanifest.xml"
-    $ManifestTarget = Join-Path $AppImageDir "AppxManifest.xml"
+    $ManifestTarget = Join-Path $AppRoot "AppxManifest.xml"
     if (-not (Test-Path $ManifestTemplate)) { throw "AppxManifest template not found at $ManifestTemplate" }
     $ManifestContent = Get-Content $ManifestTemplate -Raw
     # Read secrets from environment variables set by the workflow
@@ -80,7 +85,15 @@ if ($Type -eq "msix") {
     $ManifestContent = $ManifestContent -replace "__VERSION__", $Version4
     Set-Content -Path $ManifestTarget -Value $ManifestContent -Encoding UTF8
 
-    # Step C: pack MSIX using makeappx.exe
+    # Step C: copy visual assets into package
+    $AssetsSource = Join-Path $ProjectRoot "packaging\windows\assets"
+    $AssetsTarget = Join-Path $AppRoot "Assets"
+    if (Test-Path $AssetsSource) {
+        New-Item -ItemType Directory -Path $AssetsTarget -Force | Out-Null
+        Copy-Item -Path (Join-Path $AssetsSource "*") -Destination $AssetsTarget -Force
+    }
+
+    # Step D: pack MSIX using makeappx.exe
     $MakeAppxPath = (Get-Command makeappx.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -First 1)
     if (-not $MakeAppxPath) {
         $MakeAppxPath = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\makeappx.exe" -ErrorAction SilentlyContinue |
@@ -94,7 +107,7 @@ if ($Type -eq "msix") {
     }
     if (-not $MakeAppxPath) { throw "makeappx.exe not found on this runner. Ensure Windows SDK is installed." }
     $MsixOutput = Join-Path $InstallerDirectory "Bizora.msix"
-    & $MakeAppxPath pack -d $AppImageDir -p $MsixOutput
+    & $MakeAppxPath pack -d $AppRoot -p $MsixOutput
     if ($LASTEXITCODE -ne 0) { throw "makeappx failed to create the MSIX package." }
 
     # SHA‑256 hash for the MSIX
