@@ -13,6 +13,8 @@ jobs:
     env:
       SIGNING_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
       SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+      MSIX_PACKAGE_NAME: ${{ secrets.MSIX_PACKAGE_NAME }}
+      MSIX_PUBLISHER_ID: ${{ secrets.MSIX_PUBLISHER_ID }}
 
     steps:
       - name: Check out source
@@ -29,24 +31,24 @@ jobs:
         shell: pwsh
         run: |
           choco install wixtoolset --no-progress -y
-          $wix = Get-ChildItem "${env:ProgramFiles(x86)}\WiX Toolset v3*\bin" -Directory |
+          $wix = Get-ChildItem "${env:ProgramFiles(x86)}\\WiX Toolset v3*\\bin" -Directory |
             Sort-Object FullName -Descending |
             Select-Object -First 1
           if (-not $wix) { throw "WiX Toolset 3 was not found after installation." }
           $wix.FullName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Build and test EXE installer
+      - name: Build EXE installer
         shell: pwsh
-        run: .\packaging\windows\build-installer.ps1 -Type exe
+        run: .\\packaging\\windows\\build-installer.ps1 -Type exe
 
-      - name: Sign installer
+      - name: Sign EXE installer (if certificate provided)
         if: ${{ env.SIGNING_CERTIFICATE_BASE64 != '' }}
         shell: pwsh
         run: |
           $certificate = Join-Path $env:RUNNER_TEMP "bizora-signing.pfx"
           [IO.File]::WriteAllBytes($certificate, [Convert]::FromBase64String($env:SIGNING_CERTIFICATE_BASE64))
-          $installer = Get-ChildItem target\installer\*.exe | Select-Object -First 1
-          $signTool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" |
+          $installer = Get-ChildItem target\\installer\\*.exe | Select-Object -First 1
+          $signTool = Get-ChildItem "${env:ProgramFiles(x86)}\\Windows Kits\\10\\bin\\*\\x64\\signtool.exe" |
             Sort-Object FullName -Descending |
             Select-Object -First 1
           if (-not $signTool) { throw "SignTool was not found." }
@@ -54,15 +56,19 @@ jobs:
             /tr http://timestamp.digicert.com /td SHA256 $installer.FullName
           Remove-Item $certificate -Force
           $hash = Get-FileHash $installer.FullName -Algorithm SHA256
-          "$($hash.Hash.ToLower())  $($installer.Name)" |
-            Set-Content "target\installer\$($installer.Name).sha256" -Encoding ascii
+          "${hash.Hash.ToLower()}  ${installer.Name}" | Set-Content "target\\installer\\${installer.Name}.sha256" -Encoding ascii
 
-      - name: Upload installer
+      - name: Build MSIX installer
+        shell: pwsh
+        run: .\\packaging\\windows\\build-installer.ps1 -Type msix
+
+      - name: Upload installers
         uses: actions/upload-artifact@v4
         with:
           name: Bizora-Windows-Installer
           path: |
             target/installer/*.exe
+            target/installer/*.msix
             target/installer/*.sha256
           if-no-files-found: error
           retention-days: 30

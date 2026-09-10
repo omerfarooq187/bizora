@@ -1,0 +1,19 @@
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" IgnorableNamespaces="uap mp uap5">
+  <Identity Name="__PACKAGE_NAME__" Publisher="__PUBLISHER_ID__" Version="__VERSION__" />
+  <Properties>
+    <DisplayName>Bizora</DisplayName>
+    <PublisherDisplayName>__PUBLISHER_DISPLAY_NAME__</PublisherDisplayName>
+    <Logo>Assets\logo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.18362.0" MaxVersionTested="10.0.19041.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+  <Applications>
+    <Application Id="BizoraApp" Executable="Bizora.exe" EntryPoint="Bizora.App">
+      <uap:VisualElements DisplayName="Bizora" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Bizora Application" BackgroundColor="transparent" />
+    </Application>
+  </Applications>
+</Package>
