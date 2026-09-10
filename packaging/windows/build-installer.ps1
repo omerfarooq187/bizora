@@ -31,7 +31,7 @@ $Version4 = $VersionParts[0..3] -join "."
 
 # MSIX build path
 if ($Type -eq "msix") {
-    # Step A: generate app-image using jpackage
+    # Step A: generate app‑image using jpackage
     $AppImageDir = Join-Path $ProjectRoot "target\\app-image"
     $Arguments = @(
         "--type", "app-image",
@@ -64,9 +64,13 @@ if ($Type -eq "msix") {
     $ManifestTarget = Join-Path $AppImageDir "AppxManifest.xml"
     if (-not (Test-Path $ManifestTemplate)) { throw "AppxManifest template not found at $ManifestTemplate" }
     $ManifestContent = Get-Content $ManifestTemplate -Raw
-    $ManifestContent = $ManifestContent -replace "__PACKAGE_NAME__", "${{ secrets.MSIX_PACKAGE_NAME }}"
-    $ManifestContent = $ManifestContent -replace "__PUBLISHER_ID__", "${{ secrets.MSIX_PUBLISHER_ID }}"
-    $ManifestContent = $ManifestContent -replace "__PUBLISHER_DISPLAY_NAME__", "InnovateWithOmer"
+    # Read secrets from environment variables set by the workflow
+    $PackageName = $env:MSIX_PACKAGE_NAME
+    $PublisherId = $env:MSIX_PUBLISHER_ID
+    $PublisherDisplayName = "InnovateWithOmer"
+    $ManifestContent = $ManifestContent -replace "__PACKAGE_NAME__", $PackageName
+    $ManifestContent = $ManifestContent -replace "__PUBLISHER_ID__", $PublisherId
+    $ManifestContent = $ManifestContent -replace "__PUBLISHER_DISPLAY_NAME__", $PublisherDisplayName
     $ManifestContent = $ManifestContent -replace "__VERSION__", $Version4
     Set-Content -Path $ManifestTarget -Value $ManifestContent -Encoding UTF8
 

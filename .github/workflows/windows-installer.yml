@@ -59,6 +59,9 @@ jobs:
           "${hash.Hash.ToLower()}  ${installer.Name}" | Set-Content "target\\installer\\${installer.Name}.sha256" -Encoding ascii
 
       - name: Build MSIX installer
+        env:
+          MSIX_PACKAGE_NAME: ${{ secrets.MSIX_PACKAGE_NAME }}
+          MSIX_PUBLISHER_ID: ${{ secrets.MSIX_PUBLISHER_ID }}
         shell: pwsh
         run: .\\packaging\\windows\\build-installer.ps1 -Type msix
 
