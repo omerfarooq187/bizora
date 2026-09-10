@@ -80,11 +80,21 @@ if ($Type -eq "msix") {
     $ManifestContent = $ManifestContent -replace "__VERSION__", $Version4
     Set-Content -Path $ManifestTarget -Value $ManifestContent -Encoding UTF8
 
-    # Step C: pack MSIX using makeappx.exe (available on windows‑latest)
-    $MakeAppx = Get-Command makeappx.exe -ErrorAction SilentlyContinue
-    if (-not $MakeAppx) { throw "makeappx.exe not found on this runner. Ensure Windows SDK is installed." }
+    # Step C: pack MSIX using makeappx.exe
+    $MakeAppxPath = (Get-Command makeappx.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -First 1)
+    if (-not $MakeAppxPath) {
+        $MakeAppxPath = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\makeappx.exe" -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending |
+            Select-Object -ExpandProperty FullName -First 1
+    }
+    if (-not $MakeAppxPath) {
+        $MakeAppxPath = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x86\makeappx.exe" -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending |
+            Select-Object -ExpandProperty FullName -First 1
+    }
+    if (-not $MakeAppxPath) { throw "makeappx.exe not found on this runner. Ensure Windows SDK is installed." }
     $MsixOutput = Join-Path $InstallerDirectory "Bizora.msix"
-    & $MakeAppx pack -d $AppImageDir -p $MsixOutput
+    & $MakeAppxPath pack -d $AppImageDir -p $MsixOutput
     if ($LASTEXITCODE -ne 0) { throw "makeappx failed to create the MSIX package." }
 
     # SHA‑256 hash for the MSIX
