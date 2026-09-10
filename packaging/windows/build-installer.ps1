@@ -25,9 +25,9 @@ $RawVersion = [string]$Pom.project.version
 # Strip any suffix like -SNAPSHOT
 $BaseVersion = $RawVersion -replace "-.*$", ""
 # Ensure four‑part numeric version for MSIX manifest (e.g. 1.0.0.0)
-$VersionParts = $BaseVersion -split "\\."
+$VersionParts = @($BaseVersion.Split('.'))
 while ($VersionParts.Count -lt 4) { $VersionParts += "0" }
-$Version4 = $VersionParts[0..3] -join "."
+$Version4 = ($VersionParts[0..3]) -join "."
 
 # Input and output directory setup
 $InputDirectory = Join-Path $ProjectRoot "target\package-input"
