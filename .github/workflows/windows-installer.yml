@@ -27,6 +27,9 @@ jobs:
           java-version: "21"
           cache: maven
 
+      - name: Build Maven Package
+        run: mvn clean package -DskipTests
+
       - name: Install WiX Toolset 3
         shell: pwsh
         run: |

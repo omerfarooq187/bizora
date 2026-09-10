@@ -29,23 +29,37 @@ $VersionParts = $BaseVersion -split "\\."
 while ($VersionParts.Count -lt 4) { $VersionParts += "0" }
 $Version4 = $VersionParts[0..3] -join "."
 
+# Input and output directory setup
+$InputDirectory = Join-Path $ProjectRoot "target\package-input"
+$InstallerDirectory = Join-Path $ProjectRoot "target\installer"
+$Version = $BaseVersion
+$ApplicationJar = "bizora-$Version.jar"
+
+if (-not (Test-Path (Join-Path $ProjectRoot "target\$ApplicationJar"))) {
+    throw "Application JAR 'target\$ApplicationJar' was not found. Please build the Maven package first (e.g. mvn clean package -DskipTests)."
+}
+
+New-Item -ItemType Directory -Path $InputDirectory -Force | Out-Null
+Copy-Item (Join-Path $ProjectRoot "target\$ApplicationJar") $InputDirectory -Force
+New-Item -ItemType Directory -Path $InstallerDirectory -Force | Out-Null
+
 # MSIX build path
 if ($Type -eq "msix") {
     # Step A: generate app‑image using jpackage
-    $AppImageDir = Join-Path $ProjectRoot "target\\app-image"
+    $AppImageDir = Join-Path $ProjectRoot "target\app-image"
     $Arguments = @(
         "--type", "app-image",
         "--name", "Bizora",
         "--dest", $AppImageDir,
-        "--input", "target\\package-input",
-        "--main-jar", "bizora-$BaseVersion.jar",
+        "--input", $InputDirectory,
+        "--main-jar", $ApplicationJar,
         "--main-class", "com.innovatewithomer.bizora.Launcher",
         "--app-version", $BaseVersion,
         "--vendor", "InnovateWithOmer",
         "--description", "Offline-first business management and point-of-sale software",
         "--copyright", "Copyright $(Get-Date).Year InnovateWithOmer. All rights reserved.",
         "--app-content", (Join-Path $ProjectRoot "NOTICE.txt"),
-        "--icon", (Join-Path $ProjectRoot "packaging\\windows\\Bizora.ico"),
+        "--icon", (Join-Path $ProjectRoot "packaging\windows\Bizora.ico"),
         "--win-menu",
         "--win-menu-group", "Bizora",
         "--win-shortcut",
@@ -60,7 +74,7 @@ if ($Type -eq "msix") {
     if ($LASTEXITCODE -ne 0) { throw "jpackage failed to create the app-image." }
 
     # Step B: inject AppxManifest.xml
-    $ManifestTemplate = Join-Path $ProjectRoot "packaging\\windows\\appxmanifest.xml"
+    $ManifestTemplate = Join-Path $ProjectRoot "packaging\windows\appxmanifest.xml"
     $ManifestTarget = Join-Path $AppImageDir "AppxManifest.xml"
     if (-not (Test-Path $ManifestTemplate)) { throw "AppxManifest template not found at $ManifestTemplate" }
     $ManifestContent = Get-Content $ManifestTemplate -Raw
@@ -77,7 +91,7 @@ if ($Type -eq "msix") {
     # Step C: pack MSIX using makeappx.exe (available on windows‑latest)
     $MakeAppx = Get-Command makeappx.exe -ErrorAction SilentlyContinue
     if (-not $MakeAppx) { throw "makeappx.exe not found on this runner. Ensure Windows SDK is installed." }
-    $MsixOutput = Join-Path $ProjectRoot "target\\installer\\Bizora.msix"
+    $MsixOutput = Join-Path $InstallerDirectory "Bizora.msix"
     & $MakeAppx pack -d $AppImageDir -p $MsixOutput
     if ($LASTEXITCODE -ne 0) { throw "makeappx failed to create the MSIX package." }
 
@@ -90,13 +104,6 @@ if ($Type -eq "msix") {
 }
 
 # Existing exe/msi flow (unchanged)
-$InputDirectory = Join-Path $ProjectRoot "target\\package-input"
-$InstallerDirectory = Join-Path $ProjectRoot "target\\installer"
-$Version = $BaseVersion
-$ApplicationJar = "bizora-$Version.jar"
-Copy-Item (Join-Path $ProjectRoot "target\\$ApplicationJar") $InputDirectory -Force
-New-Item -ItemType Directory -Path $InstallerDirectory -Force | Out-Null
-
 $CopyrightYear = (Get-Date).Year
 $Arguments = @(
     "--type", $Type,
