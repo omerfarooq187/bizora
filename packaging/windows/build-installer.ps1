@@ -60,14 +60,6 @@ if ($Type -eq "msix") {
         "--copyright", "Copyright $(Get-Date).Year InnovateWithOmer. All rights reserved.",
         "--app-content", (Join-Path $ProjectRoot "NOTICE.txt"),
         "--icon", (Join-Path $ProjectRoot "packaging\windows\Bizora.ico"),
-        "--win-menu",
-        "--win-menu-group", "Bizora",
-        "--win-shortcut",
-        "--win-shortcut-prompt",
-        "--win-dir-chooser",
-        "--win-per-user-install",
-        "--win-help-url", "https://innovatewithomer.dev",
-        "--win-upgrade-uuid", "9475a604-45ac-4ac1-b3d8-86c367b10b30",
         "--java-options", "-Dfile.encoding=UTF-8"
     )
     & $Jpackage @Arguments
