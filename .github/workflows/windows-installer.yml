@@ -1,4 +1,4 @@
-name: Build Windows Installer
+name: Build Windows MSIX Package
 
 on:
   workflow_dispatch:
@@ -7,12 +7,10 @@ permissions:
   contents: read
 
 jobs:
-  windows-installer:
+  build-msix:
     runs-on: windows-latest
     timeout-minutes: 30
     env:
-      SIGNING_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
-      SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
       MSIX_PACKAGE_NAME: ${{ secrets.MSIX_PACKAGE_NAME }}
       MSIX_PUBLISHER_ID: ${{ secrets.MSIX_PUBLISHER_ID }}
 
@@ -30,51 +28,17 @@ jobs:
       - name: Build Maven Package
         run: mvn clean package -DskipTests
 
-      - name: Install WiX Toolset 3
+      - name: Build MSIX package
         shell: pwsh
-        run: |
-          choco install wixtoolset --no-progress -y
-          $wix = Get-ChildItem "${env:ProgramFiles(x86)}\\WiX Toolset v3*\\bin" -Directory |
-            Sort-Object FullName -Descending |
-            Select-Object -First 1
-          if (-not $wix) { throw "WiX Toolset 3 was not found after installation." }
-          $wix.FullName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        run: .\packaging\windows\build-installer.ps1 -Type msix
 
-      - name: Build EXE installer
-        shell: pwsh
-        run: .\\packaging\\windows\\build-installer.ps1 -Type exe
-
-      - name: Sign EXE installer (if certificate provided)
-        if: ${{ env.SIGNING_CERTIFICATE_BASE64 != '' }}
-        shell: pwsh
-        run: |
-          $certificate = Join-Path $env:RUNNER_TEMP "bizora-signing.pfx"
-          [IO.File]::WriteAllBytes($certificate, [Convert]::FromBase64String($env:SIGNING_CERTIFICATE_BASE64))
-          $installer = Get-ChildItem target\\installer\\*.exe | Select-Object -First 1
-          $signTool = Get-ChildItem "${env:ProgramFiles(x86)}\\Windows Kits\\10\\bin\\*\\x64\\signtool.exe" |
-            Sort-Object FullName -Descending |
-            Select-Object -First 1
-          if (-not $signTool) { throw "SignTool was not found." }
-          & $signTool.FullName sign /fd SHA256 /f $certificate /p $env:SIGNING_CERTIFICATE_PASSWORD `
-            /tr http://timestamp.digicert.com /td SHA256 $installer.FullName
-          Remove-Item $certificate -Force
-          $hash = Get-FileHash $installer.FullName -Algorithm SHA256
-          "${hash.Hash.ToLower()}  ${installer.Name}" | Set-Content "target\\installer\\${installer.Name}.sha256" -Encoding ascii
-
-      - name: Build MSIX installer
-        env:
-          MSIX_PACKAGE_NAME: ${{ secrets.MSIX_PACKAGE_NAME }}
-          MSIX_PUBLISHER_ID: ${{ secrets.MSIX_PUBLISHER_ID }}
-        shell: pwsh
-        run: .\\packaging\\windows\\build-installer.ps1 -Type msix
-
-      - name: Upload installers
+      - name: Upload MSIX package
         uses: actions/upload-artifact@v4
         with:
-          name: Bizora-Windows-Installer
+          name: Bizora-MSIX
           path: |
-            target/installer/*.exe
             target/installer/*.msix
             target/installer/*.sha256
           if-no-files-found: error
           retention-days: 30
+

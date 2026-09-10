@@ -15,9 +15,11 @@ $Jpackage = Join-Path $env:JAVA_HOME "bin\\jpackage.exe"
 if (-not (Test-Path $Jpackage)) {
     throw "jpackage.exe was not found. Install a full JDK 21 and set JAVA_HOME."
 }
-if (-not (Get-Command candle.exe -ErrorAction SilentlyContinue) -or
-    -not (Get-Command light.exe -ErrorAction SilentlyContinue)) {
-    throw "WiX Toolset 3 is required. Install it with: choco install wixtoolset"
+if ($Type -ne "msix") {
+    if (-not (Get-Command candle.exe -ErrorAction SilentlyContinue) -or
+        -not (Get-Command light.exe -ErrorAction SilentlyContinue)) {
+        throw "WiX Toolset 3 is required for EXE/MSI installers. Install it with: choco install wixtoolset"
+    }
 }
 
 [xml]$Pom = Get-Content (Join-Path $ProjectRoot "pom.xml")
